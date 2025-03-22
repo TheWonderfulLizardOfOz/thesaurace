@@ -596,6 +596,16 @@ async def main():
                     else:
                         voiceline = "GOODWIN"
 
+            else:
+                voiceline = "LOSS"
+
+            if voiceline == "GOODWIN":
+                pass # play a good win line here
+            if voiceline == "BADWIN":
+                pass # play a bad win line here
+            if voiceline == "LOSS":
+                pass # play a loss line here
+
             lscroll = 0
             rscroll = 0
 
