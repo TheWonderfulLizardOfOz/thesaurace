@@ -186,6 +186,13 @@ def quit_game():
     sys.exit()
 
 ### GAME CLASSES / FUNCTIONS
+def checkMouseClick(buttons, game_state):
+    mouse_loc = true_mouse_loc()
+    for button in buttons:
+        if button.mouseInButton(mouse_loc):
+            game_state = button.toState
+            log(("new game state: " + game_state))
+    return game_state
 
 ### MAIN FUNCTION
 async def main():
@@ -232,13 +239,11 @@ async def main():
                         log(("new game state: " + game_state))    
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_loc = true_mouse_loc()
-                    for button in buttons:
-                        if button.mouseInButton(mouse_loc):
-                            game_state = button.toState
+                    game_state = checkMouseClick(buttons, game_state)
 
-                        
-            await asyncio.sleep(0)
+
+
+        await asyncio.sleep(0)
 
         while game_state == "START": # the actual gameplay
 
@@ -306,9 +311,9 @@ async def main():
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
 
-            backText = font.render("Back to Main Menu", True, (0, 0, 0))
-            backLoc = (WINDOW_WIDTH // 2 - backText.get_width() // 2, 350 - backText.get_height() // 2)
-            game_window.blit(backText, backLoc)
+            backButton = Button(font, "BACK TO MENU", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "MAIN MENU")
+            backButton.show(game_window)
+            buttons = [backButton]
 
             window_resize()
 
@@ -320,7 +325,7 @@ async def main():
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         game_state = "MAIN MENU"
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_loc = true_mouse_loc()
+                    game_state = checkMouseClick(buttons, game_state)
 
             await asyncio.sleep(0)
 
