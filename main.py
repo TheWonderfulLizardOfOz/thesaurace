@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype
 
 ### TEMPLATE FUNCTIONS
 
@@ -208,7 +208,11 @@ async def main():
 
             game_end = False
 
-            current_word = "foundations"
+            current_word = "hello"
+
+            history = []
+
+            print(gameTextPrototype.get_synonyms_of(current_word))
             
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
 
