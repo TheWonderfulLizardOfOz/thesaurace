@@ -468,6 +468,10 @@ async def main():
                     ml = true_mouse_loc()
                     temp = ml[1] - 225
                     scroll = int(temp // (350 / len(syn_list)))
+                    if scroll < 0:
+                        scroll = 0
+                    if scroll > len(syn_list) - 1:
+                        scroll = len(syn_list) - 1
 
                 if goal_word == current_word:
                     game_end = True
@@ -709,6 +713,8 @@ pygame.display.update()
 
 duck = pygame.image.load("duck_sheet.png").convert()
 duck = pygame.transform.scale(duck, (12500, 226))
+
+miku = pygame.image.load("miku_sheet.png").convert()
 
 console_log = []
 console_data = {"Message": "",
