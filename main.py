@@ -2,6 +2,21 @@
 import random, pygame, sys, os, asyncio, requests, gameTextPrototype
 
 ### TEMPLATE FUNCTIONS
+class Button:
+    def __init__(self, font, text, loc, colour=None):
+        self.font = font
+        self.text = text
+        if colour:
+            self.colour = colour
+        else:
+            self.colour = (0, 0, 0)
+        self.font.render(self.text, True, self.colour)
+        self.loc = loc
+
+    def show(self, gameWindow):
+        render = self.font.render(self.text, True, self.colour)
+        gameWindow.blit(render, (self.loc[0] - render.get_width() // 2, self.loc[1] - render.get_height() // 2))
+
 
 def resource_path(relative_path):
 
@@ -161,7 +176,6 @@ def quit_game():
 ### GAME CLASSES / FUNCTIONS
 
 ### MAIN FUNCTION
-
 async def main():
 
     options = ["START"]
@@ -181,11 +195,17 @@ async def main():
 
             #game_window.blit(logo, (WINDOW_WIDTH // 2 - logo.get_width() // 2, 0))
             #game_window.blit(logotoo, (25, WINDOW_HEIGHT - 20 - logotoo.get_height()))
-            
+
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
 
-            text = font.render("START", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 350 - text.get_height() // 2))
+            # startText = font.render("START", True, (0, 0, 0))
+            # startLoc = (WINDOW_WIDTH // 2 - startText.get_width() // 2, (WINDOW_HEIGHT // 2) - startText.get_height() // 2)
+            # game_window.blit(startText, startLoc)
+            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+            startButton.show(game_window)
+            creditsText = font.render("CREDITS", True, (0, 0, 0))
+            creditsLoc = (WINDOW_WIDTH // 2 - creditsText.get_width() // 2, (WINDOW_HEIGHT // 2) + creditsText.get_height() // 2)
+            game_window.blit(creditsText, creditsLoc)
 
             window_resize()
 
@@ -201,6 +221,7 @@ async def main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
                     mouse_loc = true_mouse_loc()
+
                         
             await asyncio.sleep(0)
 
@@ -252,6 +273,35 @@ async def main():
                             game_state = "MAIN MENU"
                             
                 await asyncio.sleep(0)
+
+        while game_state == "CREDITS":
+            clock.tick(FRAMERATE)
+
+            ## display
+
+            game_window.fill((255, 255, 255))
+
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+
+            backText = font.render("Back to Main Menu", True, (0, 0, 0))
+            backLoc = (WINDOW_WIDTH // 2 - backText.get_width() // 2, 350 - backText.get_height() // 2)
+            game_window.blit(backText, backLoc)
+
+            window_resize()
+
+            events = global_inputs()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        game_state = "MAIN MENU"
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_loc = true_mouse_loc()
+
+            await asyncio.sleep(0)
+
+
 
 # Create width and height constants
 WINDOW_WIDTH = 960
