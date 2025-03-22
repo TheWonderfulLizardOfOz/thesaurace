@@ -575,6 +575,27 @@ async def main():
             else:
                 texy = fonty.render("GAVE UP", True, (0, 0, 0))
 
+            voiceline = None
+
+            if won:
+                if game_mode in {"IRON MAN", "TIMER", "LIES"}:
+                    if timer[2] > len(createdPath) / 2:
+                        voiceline = "BADWIN"
+                    else:
+                        voiceline = "GOODWIN"
+
+                elif game_mode == "TURN BASED":
+                    if len(history) > len(createdPath):
+                        voiceline = "BADWIN"
+                    else:
+                        voiceline = "GOODWIN"
+
+                elif game_mode == "SCORE":
+                    if highscore < 35:
+                        voiceline = "BADWIN"
+                    else:
+                        voiceline = "GOODWIN"
+
             lscroll = 0
             rscroll = 0
 
