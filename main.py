@@ -251,8 +251,8 @@ def setGoalWord(currentWord, difficulty):
 ### MAIN FUNCTION
 async def main():
 
-    options = ["START", "CREDITS", "DIFFICULTY"]
-    noSynonyms = ["I blame the API", "Skill Issue"]
+    options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL"]
+    noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
