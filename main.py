@@ -16,6 +16,7 @@ class Button:
         self.realLoc = (0, 0)
         self.width = 0
         self.height = 0
+        self.value = 0
 
     def show(self, gameWindow):
         render = self.font.render(self.text, True, self.colour)
@@ -188,16 +189,18 @@ def quit_game():
 ### GAME CLASSES / FUNCTIONS
 def checkMouseClick(buttons, game_state):
     mouse_loc = true_mouse_loc()
+    value = 0
     for button in buttons:
         if button.mouseInButton(mouse_loc):
             game_state = button.toState
+            value = button.value
             log(("new game state: " + game_state))
-    return game_state
+    return game_state, value
 
 def setGoalWord(currentWord, difficulty):
     back = currentWord
     i = 0
-    while i < 15:
+    while i < difficulty:
         synonyms = gameTextPrototype.get_synonyms_of(currentWord)
         #print(currentWord, synonyms)
         if len(synonyms) == 0:
@@ -215,6 +218,7 @@ async def main():
     options = ["START"]
 
     game_state = "MAIN MENU"
+    difficulty = 10
     
     while True:
 
@@ -236,11 +240,15 @@ async def main():
             # startText = font.render("START", True, (0, 0, 0))
             # startLoc = (WINDOW_WIDTH // 2 - startText.get_width() // 2, (WINDOW_HEIGHT // 2) - startText.get_height() // 2)
             # game_window.blit(startText, startLoc)
-            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "START")
+            difficultyButton = Button(font, "DIFFICULTY", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "DIFFICULTY")
+            difficultyButton.show(game_window)
+
+            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - difficultyButton.height), "START")
             startButton.show(game_window)
-            creditButton = Button(font, "CREDITS", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + startButton.height), "CREDITS")
+
+            creditButton = Button(font, "CREDITS", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + difficultyButton.height), "CREDITS")
             creditButton.show(game_window)
-            buttons = [startButton, creditButton]
+            buttons = [startButton, difficultyButton, creditButton]
 
             window_resize()
 
@@ -254,7 +262,7 @@ async def main():
                         log(("new game state: " + game_state))    
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    game_state = checkMouseClick(buttons, game_state)
+                    game_state = checkMouseClick(buttons, game_state)[0]
 
 
 
@@ -283,7 +291,7 @@ async def main():
 
             window_resize()
 
-            goal_word = setGoalWord(current_word, 15)
+            goal_word = setGoalWord(current_word, difficulty)
 
             scroll = 0
 
@@ -406,7 +414,42 @@ async def main():
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         game_state = "MAIN MENU"
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    game_state = checkMouseClick(buttons, game_state)
+                    game_state = checkMouseClick(buttons, game_state)[0]
+
+            await asyncio.sleep(0)
+
+        while game_state == "DIFFICULTY":
+            clock.tick(FRAMERATE)
+            buttons = []
+            ## display
+
+            game_window.fill((255, 255, 255))
+
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+            difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
+            prevHeight = WINDOW_HEIGHT // 4
+            for difficulty, value in difficulties.items():
+                newButton = Button(font, difficulty, (WINDOW_WIDTH // 2, prevHeight), "MAIN MENU")
+                newButton.show(game_window)
+                newButton.value = value
+                prevHeight += newButton.height
+                buttons.append(newButton)
+
+            window_resize()
+
+            events = global_inputs()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        game_state = "MAIN MENU"
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    result = checkMouseClick(buttons, game_state)
+                    if result[0] == "MAIN MENU":
+                        difficulty = result[1]
+                        game_state = "MAIN MENU"
 
             await asyncio.sleep(0)
 
