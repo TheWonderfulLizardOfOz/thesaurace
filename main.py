@@ -558,10 +558,7 @@ async def main():
                         j += 1
 
                 textest = fontest.render("GOAL PATH", True, (0, 0, 0))
-                game_window.blit(textest, (WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))
-
-                ### AI Feedback ###
-                
+                game_window.blit(textest, (WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))             
 
                 j = 0
                 for i in range(rscroll, min(rscroll + 7, len(createdPath))):
