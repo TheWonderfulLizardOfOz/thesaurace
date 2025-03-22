@@ -276,8 +276,6 @@ async def main():
     difficulty = "NORMAL"
     game_modes = ["TIMER", "TURN BASED", "IRON MAN", "LIES"]
     game_mode = None
-    sam = pygame.image.load("sam.png").convert()
-    sam = pygame.transform.scale(sam, (360, 270))
     lieCount = 0
 
     
@@ -291,7 +289,7 @@ async def main():
             ## display
 
             game_window.fill((255, 255, 255))
-            game_window.blit(sam, (WINDOW_WIDTH // 2 - sam.get_width() // 2, WINDOW_HEIGHT // 15))
+            game_window.blit(logo, (WINDOW_WIDTH // 2 - sam.get_width() // 2, WINDOW_HEIGHT // 15))
 
             #game_window.blit(logo, (WINDOW_WIDTH // 2 - logo.get_width() // 2, 0))
             #game_window.blit(logotoo, (25, WINDOW_HEIGHT - 20 - logotoo.get_height()))
@@ -301,7 +299,7 @@ async def main():
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
             buttons = []
-            prevHeight = WINDOW_HEIGHT // 2
+            prevHeight = WINDOW_HEIGHT // 2 - 20
             for opt in options:
                 newButton = Button(font, opt, (WINDOW_WIDTH // 2, prevHeight), opt)
                 newButton.show(game_window)
@@ -801,6 +799,10 @@ duck = pygame.image.load("duck_sheet.png").convert()
 duck = pygame.transform.scale(duck, (12500, 226))
 
 miku = pygame.image.load("miku_sheet.png").convert()
+    
+sam = pygame.image.load("sam.png").convert()
+sam = pygame.transform.scale(sam, (360, 270))
+logo = pygame.image.load("logo.png").convert()
 
 console_log = []
 console_data = {"Message": "",
