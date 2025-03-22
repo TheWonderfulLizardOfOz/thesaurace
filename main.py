@@ -208,13 +208,20 @@ async def main():
 
             game_end = False
 
-            current_word = "Foundations"
+            current_word = "foundations"
+            
+            font = pygame.font.Font(resource_path('Lora.ttf'), 80)
+
+            scroll = 0
 
             while game_end == False:
 
                 clock.tick(FRAMERATE)
 
                 game_window.fill((255, 255, 255))
+
+                text = font.render(current_word.upper(), True, (0, 0, 0))
+                game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 20))
         
                 window_resize()
 
