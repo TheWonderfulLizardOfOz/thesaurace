@@ -200,7 +200,7 @@ def checkMouseClick(buttons, game_state):
 def setGoalWord(currentWord, difficulty):
     back = currentWord
     i = 0
-    while i < difficulty:
+    while i <= difficulty:
         synonyms = gameTextPrototype.get_synonyms_of(currentWord)
         #print(currentWord, synonyms)
         if len(synonyms) == 0:
