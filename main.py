@@ -327,13 +327,13 @@ async def main():
             game_window.fill((255, 255, 255))
 
             text = font.render("LOADING...", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 2 - text.get_height() // 2))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3 * 2 - text.get_height() // 2))
 
             window_resize()
             
             start = time.perf_counter()
             check = [True]
-            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.3, 0.25), 50, 0.1, check))
+            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.3, 0.3), 50, 0.1, check))
             t1.start()
             t2 = threading.Thread(target=fun_animation, args=(miku, 38, (0.7, 0.25), 19, 0.1, check))
             t2.start()
