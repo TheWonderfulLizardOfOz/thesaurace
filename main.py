@@ -232,7 +232,7 @@ def setGoalWord(currentWord, difficulty):
 async def main():
 
     options = ["START", "CREDITS", "DIFFICULTY"]
-
+    noSynonyms = ["I blame the API", "Skill Issue"]
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
@@ -381,7 +381,7 @@ async def main():
                     textest = fontest.render("There's nothing here...", True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 235))
 
-                    textest = fontest.render("Skill Issue", True, (128, 128, 128))
+                    textest = fontest.render(random.choice(noSynonyms), True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 305))
         
                 window_resize()
