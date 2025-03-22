@@ -349,7 +349,7 @@ async def main():
 
             pygame.event.clear()
 
-            while game_end == False:
+            while game_end == False: ## THIS IS THE WHILE LOOP
 
                 clock.tick(FRAMERATE)
 
