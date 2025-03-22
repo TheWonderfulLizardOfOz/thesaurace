@@ -233,7 +233,7 @@ async def main():
     options = ["START"]
 
     game_state = "MAIN MENU"
-    difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25, "SUPER PAIN": 100}
+    difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
     
     while True:
