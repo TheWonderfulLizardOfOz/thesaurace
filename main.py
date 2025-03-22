@@ -427,6 +427,11 @@ async def main():
                 if goal_word == current_word:
                     game_end = True
                     won = True
+
+                if console_data["Command"] == "path":
+                    log(createdPath)
+                    console_data["Command"] = ""
+                    console_data["Last Command"] = "path"
                             
                 await asyncio.sleep(0)
 
@@ -517,11 +522,6 @@ async def main():
                                 rscroll -= 1
                                 if rscroll < 0:
                                     rscroll = 0
-
-                if console_data["Command"] == "path":
-                    log(createdPath)
-                    console_data["Command"] = ""
-                    console_data["Last Command"] = "path"
                             
                 await asyncio.sleep(0)
 
