@@ -22,7 +22,9 @@ def get_synonyms_of(word):
         api_url = 'https://api.api-ninjas.com/v1/thesaurus?word={}'.format(word)
         response = requests.get(api_url, headers={'X-Api-Key': 'Aqv8rZ0xlEOBQjnTf4cCrw==B6zBflzo1sc2Sz6D'})
         if response.status_code == requests.codes.ok:
-            sanitised = list(filter(sanitiser,response.json()["synonyms"]))
+            print(f"Unsanitised length: {len(response.json()["synonyms"])}")
+            sanitised = sorted(list(set(filter(sanitiser,response.json()["synonyms"]))))
+            print(f"Sanitised length: {len(sanitised)}")
             thesaurus[word] = sanitised
             save_thesaurus()
             return thesaurus[word]
@@ -34,9 +36,8 @@ def get_synonyms_of(word):
 def sanitise_thesaurus():
     clean_thesaurus = {}
     for word in thesaurus.keys():
-        clean_thesaurus[word] = list(filter(sanitiser,thesaurus[word]))
+        clean_thesaurus[word] = sorted(list(set(filter(sanitiser,thesaurus[word]))))
     with open('cachedWords.json', 'w', encoding='utf-8') as f:
         json.dump(clean_thesaurus, f, ensure_ascii=False, indent=4)
-    
 
 sanitise_thesaurus()
