@@ -242,12 +242,14 @@ async def main():
                 events = global_inputs()
                 
                 for event in events:
-                    if event.type == pygame.KEYDOWN:
-                                        
-                        if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        ml = true_mouse_loc()
+
+                        if ml[0] < 180 and ml[1] < 80:
+                            pass ## DO UNDO HERE
+                        if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                             game_end = True
                             game_state = "MAIN MENU"
-                            log(("new game state: " + game_state))
                             
                 await asyncio.sleep(0)
 
