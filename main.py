@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, copy, pygame, sys, os, math, time, asyncio
+import random, pygame, sys, os, asyncio, requests
 
 ### TEMPLATE FUNCTIONS
 
@@ -200,7 +200,7 @@ async def main():
                         
             await asyncio.sleep(0)
 
-        while game_state == "START ": # the actual gameplay
+        while game_state == "START": # the actual gameplay
 
             clock.tick(FRAMERATE)
 
