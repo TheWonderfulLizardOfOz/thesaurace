@@ -198,19 +198,22 @@ def checkMouseClick(buttons, game_state):
     return game_state, value
 
 def setGoalWord(currentWord, difficulty):
+    createdPath = [currentWord]
     back = currentWord
     i = 0
-    while i <= difficulty:
+    while i < difficulty:
         synonyms = gameTextPrototype.get_synonyms_of(currentWord)
         #print(currentWord, synonyms)
         if len(synonyms) == 0:
             currentWord = back
             i -= 1
+
         else:
             back = currentWord
             currentWord = random.choice(synonyms)
-        i += 1
-    return currentWord
+            createdPath.append(currentWord)
+            i += 1
+    return currentWord, createdPath
 
 ### MAIN FUNCTION
 async def main():
@@ -292,7 +295,7 @@ async def main():
 
             window_resize()
 
-            goal_word = setGoalWord(current_word, difficulties[difficulty])
+            goal_word, createdPath = setGoalWord(current_word, difficulties[difficulty])
 
             scroll = 0
 
