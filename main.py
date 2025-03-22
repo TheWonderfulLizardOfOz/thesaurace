@@ -268,8 +268,6 @@ async def main():
 
             syn_list = gameTextPrototype.get_synonyms_of(current_word)
 
-            goal_word = setGoalWord(current_word, 15)
-
             history = []
             
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
@@ -277,6 +275,15 @@ async def main():
             fonter = pygame.font.Font(resource_path('Lora.ttf'), 50)
 
             fontest = pygame.font.Font(resource_path('Lora.ttf'), 65)
+
+            game_window.fill((255, 255, 255))
+
+            text = font.render("LOADING...", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 2 - text.get_height() // 2))
+
+            window_resize()
+
+            goal_word = setGoalWord(current_word, 15)
 
             scroll = 0
 
