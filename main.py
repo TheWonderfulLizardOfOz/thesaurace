@@ -415,6 +415,7 @@ async def main():
             texy = fonty.render("WIN", True, (0, 0, 0))
 
             lscroll = 0
+            rscroll = 0
 
             history.append(current_word)
 
@@ -427,10 +428,22 @@ async def main():
 
                 game_window.blit(texy, (WINDOW_WIDTH // 2 - texy.get_width() // 2, 0))
 
+                textest = fontest.render("YOUR PATH", True, (0, 0, 0))
+                game_window.blit(textest, (WINDOW_WIDTH // 4 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+
+                textest = fontest.render("TRUE PATH", True, (0, 0, 0))
+                game_window.blit(textest, (WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+
                 j = 0
-                for i in range(lscroll, min(lscroll + 6, len(history))):
-                    textest = fontest.render(history[i], True, (0, 0, 0))
-                    game_window.blit(textest, (100, 235 + j*70 - textest.get_height() // 2))
+                for i in range(lscroll, min(lscroll + 5, len(history))):
+                    textest = fonter.render(history[i], True, (0, 0, 0))
+                    game_window.blit(textest, (50, 320 + j*50 - textest.get_height() // 2))
+                    j += 1
+
+                j = 0
+                for i in range(rscroll, min(rscroll + 5, len(history))):
+                    textest = fonter.render(history[i], True, (0, 0, 0))
+                    game_window.blit(textest, (50, 320 + j*50 - textest.get_height() // 2))
                     j += 1
 
                 window_resize()
@@ -447,11 +460,19 @@ async def main():
                                 lscroll += 1
                                 if lscroll > len(history) - 2:
                                     lscroll = len(history) - 2
+                            else:
+                                rscroll += 1
+                                if rscroll > len(history) - 2:
+                                    rscroll = len(history) - 2
                         elif event.button == 4:
                             if ml[0] < WINDOW_WIDTH // 2:
                                 lscroll -= 1
                                 if lscroll < 0:
                                     lscroll = 0
+                            else:
+                                rscroll -= 1
+                                if rscroll < 0:
+                                    rscroll = 0
                             
                 await asyncio.sleep(0)
 
