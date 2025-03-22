@@ -349,7 +349,7 @@ async def main():
                 if len(syn_list) > 0:
 
                     j = 0
-                    for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
+                    for i in range(scroll, min(scroll + 6, len(syn_list))):
                         textest = fontest.render(syn_list[i], True, (0, 0, 0))
                         game_window.blit(textest, (100, 235 + j*70 - textest.get_height() // 2))
                         j += 1
@@ -394,8 +394,8 @@ async def main():
 
                         elif event.button == 5:
                             scroll += 1
-                            if scroll > len(syn_list) - 2:
-                                scroll = len(syn_list) - 2
+                            if scroll > len(syn_list) - 1:
+                                scroll = len(syn_list) - 1
                         elif event.button == 4:
                             scroll -= 1
                             if scroll < 0:
@@ -411,6 +411,8 @@ async def main():
             fonty = pygame.font.Font(resource_path('Lora.ttf'), 200)
             texy = fonty.render("WIN", True, (0, 0, 0))
 
+            lscroll = 0
+
             while game_state != "MAIN MENU":
                 clock.tick(FRAMERATE)
                 if count > 0:
@@ -420,14 +422,31 @@ async def main():
 
                 game_window.blit(texy, (WINDOW_WIDTH // 2 - texy.get_width() // 2, 0))
 
+                j = 0
+                for i in range(lscroll, min(lscroll + 6, len(history))):
+                    textest = fontest.render(history[i], True, (0, 0, 0))
+                    game_window.blit(textest, (100, 235 + j*70 - textest.get_height() // 2))
+                    j += 1
+
                 window_resize()
 
                 events = global_inputs()
 
                 for event in events:
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        if count == 0:
+                        if count == 0 and event.button < 4:
                             game_state = "MAIN MENU"
+
+                        elif event.button == 5:
+                            if ml[0] < WINDOW_WIDTH // 2:
+                                lscroll += 1
+                                if lscroll > len(syn_list) - 2:
+                                    lscroll = len(syn_list) - 2
+                        elif event.button == 4:
+                            if ml[0] < WINDOW_WIDTH // 2:
+                                lscroll -= 1
+                                if lscroll < 0:
+                                    lscroll = 0
                             
                 await asyncio.sleep(0)
 
