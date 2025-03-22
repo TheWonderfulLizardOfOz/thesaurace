@@ -300,6 +300,7 @@ async def main():
             syn_list = gameTextPrototype.get_synonyms_of(current_word)
 
             history = []
+            hisscroll = []
             
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
             
@@ -372,6 +373,8 @@ async def main():
 
                 if len(syn_list) > 0:
 
+                    pygame.draw.rect(game_window, (128, 128, 128), (20, 225 + scroll * (350 / len(syn_list)), 20, 50))
+
                     j = 0
                     for i in range(scroll, min(scroll + 6, len(syn_list))):
                         textest = fontest.render(syn_list[i], True, (0, 0, 0))
@@ -398,7 +401,7 @@ async def main():
                             if ml[0] < 180 and ml[1] < 80:
                                 if len(history) > 0:
                                     current_word = history.pop()
-                                    scroll = 0
+                                    scroll = hisscroll.pop()
                                     syn_list = gameTextPrototype.get_synonyms_of(current_word)
                             if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                                 game_end = True
@@ -408,6 +411,7 @@ async def main():
                                 for i in range(scroll, min(scroll + 6, len(syn_list))):
                                     if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
                                         history.append(current_word)
+                                        hisscroll.append(scroll)
                                         current_word = syn_list[i]
                                         syn_list = gameTextPrototype.get_synonyms_of(current_word)
                                         scroll = 0
