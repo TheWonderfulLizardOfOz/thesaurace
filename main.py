@@ -317,6 +317,8 @@ async def main():
 
             timer = [0, 0, 0]
 
+            mousedwon = False
+
             pygame.event.clear()
 
             while game_end == False:
@@ -402,7 +404,7 @@ async def main():
                             if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                                 game_end = True
 
-                            elif ml[1] > 200 and len(syn_list) > 0:
+                            elif ml[1] > 200 and len(syn_list) > 0 and ml[0] > 60:
                                 j = 0
                                 for i in range(scroll, min(scroll + 6, len(syn_list))):
                                     if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
@@ -414,6 +416,9 @@ async def main():
                                         break
                                     else:
                                         j += 1
+                            
+                            elif ml[1] > 200 and len(syn_list) > 0 and ml[0] < 60:
+                                mousedwon = True
 
                         elif event.button == 5:
                             scroll += 1
@@ -423,6 +428,14 @@ async def main():
                             scroll -= 1
                             if scroll < 0:
                                 scroll = 0
+
+                    if event.type == pygame.MOUSEBUTTONUP and mousedwon == True:
+                        mousedwon = False
+
+                if mousedwon:
+                    ml = true_mouse_loc()
+                    temp = ml[1] - 225
+                    scroll = int(temp // (350 / len(syn_list)))
 
                 if goal_word == current_word:
                     game_end = True
