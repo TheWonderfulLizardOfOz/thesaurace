@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype
 
 ### TEMPLATE FUNCTIONS
 class Button:
@@ -230,8 +230,12 @@ async def main():
             game_end = False
 
             current_word = "foundations"
+
+            history = []
             
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
+            
+            fonter = pygame.font.Font(resource_path('Lora.ttf'), 50)
 
             scroll = 0
 
@@ -242,7 +246,17 @@ async def main():
                 game_window.fill((255, 255, 255))
 
                 text = font.render(current_word.upper(), True, (0, 0, 0))
-                game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 20))
+                game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 75))
+
+                texter = fonter.render("UNDO", True, (0, 0, 0))
+                game_window.blit(texter, (90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
+
+                pygame.draw.rect(game_window, (0, 0, 0), (5, 5, 170, 70), 5, 10)
+
+                texter = fonter.render("QUIT", True, (0, 0, 0))
+                game_window.blit(texter, (WINDOW_WIDTH - 90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
+
+                pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
         
                 window_resize()
 
