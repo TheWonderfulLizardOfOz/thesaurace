@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading
 
 ### TEMPLATE FUNCTIONS
 class Button:
@@ -107,6 +107,27 @@ def window_resize():
     true_window.blit(resized_window, (true_window.get_width() // 2 - resized_window.get_width() // 2, true_window.get_height() // 2 - resized_window.get_height() // 2))
 
     pygame.display.update()
+
+def fun_animation(sheet, frame_no, fractional_position, stay_alive):
+    current_frame = 0
+    last_frame_time = time.time()
+    frame_delta = 0.02
+    update_frequency = 0.1
+    while stay_alive[0] == True:
+        time_since = time.time()-last_frame_time
+        if time_since > update_frequency:
+            last_frame_time = time.time()
+            current_frame = int(current_frame + ((time_since)/frame_delta)) % frame_no 
+            frame_width = int(sheet.get_width()/frame_no)
+            frame_height = sheet.get_height()
+            position = ((WINDOW_WIDTH*fractional_position[0])-(frame_width/2),(WINDOW_HEIGHT*fractional_position[1])-(frame_height/2))
+            segment = (frame_width*current_frame,0,frame_width,frame_height)
+            game_window.blit(sheet, position, segment)
+            window_resize()
+        else:
+            time.sleep(0)
+    return
+
 
 def global_inputs():
 
@@ -311,7 +332,13 @@ async def main():
 
             window_resize()
 
+            check = [True]
+            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.5, 0.25), check))
+            t1.start()
+
             goal_word, createdPath = setGoalWord(current_word, difficulties[difficulty])
+
+            check[0] = False
 
             scroll = 0
 
@@ -613,6 +640,9 @@ clock = pygame.time.Clock()
 # Blank Window
 game_window.fill((255, 255, 255))
 pygame.display.update()
+
+duck = pygame.image.load("duck_sheet.png").convert()
+duck = pygame.transform.scale(duck, (12500, 226))
 
 console_log = []
 console_data = {"Message": "",

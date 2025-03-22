@@ -30,7 +30,25 @@ def get_synonyms_of(word):
         else:
             print("Error:", response.status_code, response.text)
             return -1
-
+    
+def get_scrabble_score_of(word):
+    score = 0
+    for letter in word:
+        if letter in "aeiounrtls":
+            score += 1
+        elif letter in "dg":
+            score += 2
+        elif letter in "bcmp":
+            score += 3
+        elif letter in "fhvwy":
+            score += 4
+        elif letter in "k":
+            score += 5
+        elif letter in "jx":
+            score += 8
+        elif letter in "qz":
+            score += 10
+    return score
 
 def sanitise_thesaurus():
     clean_thesaurus = {}
@@ -40,36 +58,38 @@ def sanitise_thesaurus():
         json.dump(clean_thesaurus, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
-    destination = "building"
-    searchHistory = []
-    for i in range(15):
-        synonyms = get_synonyms_of(destination)
-        if len(synonyms) > 0:
-            searchHistory.append(destination)
-            destination = random.choice(synonyms)
-        else:
-            destination = searchHistory[-1]
-            searchHistory = searchHistory[:-1]
-    word = "foundations"
-    round = 0
-    history = []
-    while word != destination:
-        print(f"DESTINATION: {destination}")
-        print(f"CURRENT WORD: {word}")
-        synonyms = get_synonyms_of(word)
-        for index, synonym in enumerate(synonyms):
-            print(f"{index}: {synonym}")
-        if len(history) > 0:
-            print(f"UNDO: {history[-1]}")
-            choice = input("Select choice index or UNDO: ")
-        else:
-            choice = input("Select choice: ")
-        if choice == "UNDO":
-            word = history[-1]
-            history = history[:-1]
-        else:
-            history.append(word)
-            word = synonyms[int(choice)]
-            
+    play = input("Play game? Y/N")
+    if play == "Y":
+        destination = "building"
+        searchHistory = []
+        for i in range(15):
+            synonyms = get_synonyms_of(destination)
+            if len(synonyms) > 0:
+                searchHistory.append(destination)
+                destination = random.choice(synonyms)
+            else:
+                destination = searchHistory[-1]
+                searchHistory = searchHistory[:-1]
+        word = "foundations"
+        round = 0
+        history = []
+        while word != destination:
+            print(f"DESTINATION: {destination}")
+            print(f"CURRENT WORD: {word}")
+            synonyms = get_synonyms_of(word)
+            for index, synonym in enumerate(synonyms):
+                print(f"{index}: {synonym}")
+            if len(history) > 0:
+                print(f"UNDO: {history[-1]}")
+                choice = input("Select choice index or UNDO: ")
+            else:
+                choice = input("Select choice: ")
+            if choice == "UNDO":
+                word = history[-1]
+                history = history[:-1]
+            else:
+                history.append(word)
+                word = synonyms[int(choice)]
+                
             
         
