@@ -3,19 +3,31 @@ import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time
 
 ### TEMPLATE FUNCTIONS
 class Button:
-    def __init__(self, font, text, loc, colour=None):
+    def __init__(self, font, text, loc, toState, colour=None):
         self.font = font
         self.text = text
+        self.toState = toState
         if colour:
             self.colour = colour
         else:
             self.colour = (0, 0, 0)
         self.font.render(self.text, True, self.colour)
         self.loc = loc
+        self.realLoc = (0, 0)
+        self.width = 0
+        self.height = 0
 
     def show(self, gameWindow):
         render = self.font.render(self.text, True, self.colour)
-        gameWindow.blit(render, (self.loc[0] - render.get_width() // 2, self.loc[1] - render.get_height() // 2))
+        self.realLoc = (self.loc[0] - render.get_width() // 2, self.loc[1] - render.get_height() // 2)
+        self.width = render.get_width()
+        self.height = render.get_height()
+        gameWindow.blit(render, self.realLoc)
+
+    def mouseInButton(self, mouseLoc):
+        inWidth = self.realLoc[0] <= mouseLoc[0] <= self.realLoc[0] + self.width
+        inHeight = self.realLoc[1] <= mouseLoc[1] <= self.realLoc[1] + self.height
+        return inWidth and inHeight
 
 
 def resource_path(relative_path):
@@ -185,6 +197,7 @@ async def main():
     while True:
 
         while game_state == "MAIN MENU": # the main menu
+            buttons = []
             clock.tick(FRAMERATE)
 
             junk = random.randint(0, 20)
@@ -201,11 +214,11 @@ async def main():
             # startText = font.render("START", True, (0, 0, 0))
             # startLoc = (WINDOW_WIDTH // 2 - startText.get_width() // 2, (WINDOW_HEIGHT // 2) - startText.get_height() // 2)
             # game_window.blit(startText, startLoc)
-            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "START")
             startButton.show(game_window)
-            creditsText = font.render("CREDITS", True, (0, 0, 0))
-            creditsLoc = (WINDOW_WIDTH // 2 - creditsText.get_width() // 2, (WINDOW_HEIGHT // 2) + creditsText.get_height() // 2)
-            game_window.blit(creditsText, creditsLoc)
+            creditButton = Button(font, "CREDITS", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + startButton.height), "CREDITS")
+            creditButton.show(game_window)
+            buttons = [startButton, creditButton]
 
             window_resize()
 
@@ -219,8 +232,10 @@ async def main():
                         log(("new game state: " + game_state))    
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-
                     mouse_loc = true_mouse_loc()
+                    for button in buttons:
+                        if button.mouseInButton(mouse_loc):
+                            game_state = button.toState
 
                         
             await asyncio.sleep(0)
