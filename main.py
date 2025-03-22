@@ -236,12 +236,12 @@ async def main():
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
-    game_modes = []
+    game_modes = ["DEFAULT", "PLACE HOLDER"]
+    game_mode = None
     sam = pygame.image.load("sam.png").convert()
     sam = pygame.transform.scale(sam, (360, 270))
     
     while True:
-
         while game_state == "MAIN MENU": # the main menu
             clock.tick(FRAMERATE)
 
@@ -287,6 +287,9 @@ async def main():
         await asyncio.sleep(0)
 
         while game_state == "START": # the actual gameplay
+            if not game_mode:
+                game_state = "GAME MODE"
+                break
 
             game_end = False
             won = False
@@ -505,6 +508,7 @@ async def main():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         ml = true_mouse_loc()
                         if count == 0 and event.button < 4:
+                            game_mode = None
                             game_state = "MAIN MENU"
 
                         elif event.button == 5:
@@ -604,6 +608,42 @@ async def main():
                         if result[0] == "MAIN MENU":
                             difficulty = result[1]
                             game_state = "MAIN MENU"
+
+            await asyncio.sleep(0)
+
+        while game_state == "GAME MODE":
+            clock.tick(FRAMERATE)
+            buttons = []
+            ## display
+
+            game_window.fill((255, 255, 255))
+
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+            prevHeight = WINDOW_HEIGHT // len(game_modes)
+
+            for mode in game_modes:
+                newButton = Button(font, mode, (WINDOW_WIDTH // 2, prevHeight), "START")
+                newButton.show(game_window)
+                newButton.value = difficulty
+                prevHeight += newButton.height
+                buttons.append(newButton)
+
+            window_resize()
+
+            events = global_inputs()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        game_state = "MAIN MENU"
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button < 4:
+                        result = checkMouseClick(buttons, game_state)
+                        if result[0] == "START":
+                            game_mode = result[1]
+                            game_state = "START"
 
             await asyncio.sleep(0)
 
