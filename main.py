@@ -230,11 +230,12 @@ def setGoalWord(currentWord, difficulty):
 ### MAIN FUNCTION
 async def main():
 
-    options = ["START"]
+    options = ["START", "CREDITS", "DIFFICULTY"]
 
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
+    game_modes = []
     
     while True:
 
@@ -257,6 +258,7 @@ async def main():
             game_window.blit(difficultyText, (0, 0))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+
 
             difficultyButton = Button(font, "DIFFICULTY", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "DIFFICULTY")
             difficultyButton.show(game_window)
@@ -532,7 +534,7 @@ async def main():
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 10))
 
             font = pygame.font.Font(resource_path("Lora.ttf"), 60)
-            text = font.render("Something by Garrance", True, (0, 0, 0))
+            text = font.render("Something by Garance", True, (0, 0, 0))
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 120))
             text = font.render("Something else by Dani", True, (0, 0, 0))
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 190))
