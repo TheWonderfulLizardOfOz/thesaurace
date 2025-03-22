@@ -351,11 +351,7 @@ async def main():
 
             start = time.perf_counter()
             check = [True]
-<<<<<<< HEAD
-            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.5, 0.25), 50, 0.1, check))
-=======
             t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.3, 0.3), 50, 0.1, check))
->>>>>>> 0bb67b56601777ced9ca768ca79b80073e498c60
             t1.start()
             t2 = threading.Thread(target=fun_animation, args=(miku, 38, (0.7, 0.25), 19, 0.1, check))
             t2.start()
@@ -563,6 +559,9 @@ async def main():
 
                 textest = fontest.render("GOAL PATH", True, (0, 0, 0))
                 game_window.blit(textest, (WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+
+                ### AI Feedback ###
+                
 
                 j = 0
                 for i in range(rscroll, min(rscroll + 7, len(createdPath))):
