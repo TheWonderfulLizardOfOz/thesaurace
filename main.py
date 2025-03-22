@@ -164,31 +164,14 @@ def quit_game():
 
 async def main():
 
-    options = ["START", "TUTORIAL", "CREDITS"]
+    options = ["START"]
 
     game_state = "MAIN MENU"
-
-    sel = 0
-    count = 0
-    mov = 0
-
-    s_down = False
-    w_down = False
     
     while True:
-        
-        count = 0
-        mov = 0
-
-        s_down = False
-        w_down = False
 
         while game_state == "MAIN MENU": # the main menu
             clock.tick(FRAMERATE)
-
-            count += 1
-            if count >= FRAMERATE:
-                count -= FRAMERATE
 
             junk = random.randint(0, 20)
 
@@ -201,21 +184,8 @@ async def main():
             
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
 
-            for i in range(len(options)):
-
-                text = font.render(options[i], True, (0, 0, 0))
-                game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 350 + (i * 90) - text.get_height() // 2))
-
-                #if i == sel:
-
-                    #game_window.blit(marrow, (WINDOW_WIDTH // 2 - text.get_width() // 2 - 15 - marrow.get_width(), 356 + (i * 90) - marrow.get_height() // 2))
-
-                    #game_window.blit(pygame.transform.flip(marrow, True, True), (WINDOW_WIDTH // 2 + text.get_width() // 2 + 15, 356 + (i * 90) - marrow.get_height() // 2))
-            
-            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 80)
-
-            text = font.render((PLAT_VER + " v." + DEV_VER), True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH - text.get_width() - 10, WINDOW_HEIGHT - text.get_height() - 10))
+            text = font.render("START", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 350 - text.get_height() // 2))
 
             window_resize()
 
@@ -225,125 +195,12 @@ async def main():
                 if event.type == pygame.KEYDOWN:
                                     
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = options[sel]
-                        log(("new game state: " + game_state))
-
-                    if event.key == pygame.K_w and w_down == False:
-                        w_down = True
-                        mov -= 1
-                        count = 15
-
-                    if event.key == pygame.K_s and s_down == False:
-                        s_down = True
-                        mov += 1
-                        count = 15
-
-                if event.type == pygame.KEYUP:
-
-                    if event.key == pygame.K_w and w_down == True:
-                        w_down = False
-                        mov += 1
-
-                    if event.key == pygame.K_s and s_down == True:
-                        s_down = False
-                        mov -= 1
-
-            if count == 15:
-                count = 0
-                sel += mov
-                if sel < 0:
-                    sel = len(options) - 1
-                if sel > len(options) - 1:
-                    sel = 0         
+                        game_state = "START"
+                        log(("new game state: " + game_state))    
                         
             await asyncio.sleep(0)
-                    
-        while game_state == "CREDITS": # game credits
 
-            clock.tick(FRAMERATE)
-
-            game_window.fill((255, 255, 255))
-            
-            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
-
-            text = font.render("CREDITS", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 20))
-
-            pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH // 2 - text.get_width() // 2 - 5, 20 + text.get_height(), text.get_width() + 10, 20))
-            
-            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 80)
-
-            text = font.render("Programmed by Donian", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 150))
-
-            text = font.render("Designed by Donian", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 225))
-
-            text = font.render("Artwork from [X]", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 300))
-
-            text = font.render("Music / Sound from [X]", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 375))
-
-            text = font.render("Fonts from Kenney.nl", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 450))
-
-            text = font.render("[Asset links on itch.io]", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 600))
-     
-            window_resize()
-
-            events = global_inputs()
-            
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                                    
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = "MAIN MENU"
-                        log(("new game state: " + game_state))
-                        
-            await asyncio.sleep(0)
-                    
-        while game_state == "TUTORIAL": # the tutorial goes here
-
-            clock.tick(FRAMERATE)
-
-            game_window.fill((255, 255, 255))
-            
-            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
-
-            text = font.render("TUTORIAL", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 20))
-
-            pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH // 2 - text.get_width() // 2 - 5, 20 + text.get_height(), text.get_width() + 10, 20))
-            
-            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 80)
-
-            text = font.render("Press buttons and things occur", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2- text.get_width() // 2, 150))
-     
-            window_resize()
-
-            events = global_inputs()
-            
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                                    
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = "MAIN MENU"
-                        log(("new game state: " + game_state))
-                        
-            await asyncio.sleep(0)
-                    
-        while "START" in game_state or game_state == "NEW GAME": # do all pre-game set up here, such as default variable states
-
-            game_state = "MAIN GAME"
-
-        while game_state == "LOAD" or game_state == "LOAD GAME": # do game loading here
-            
-            game_state = "MAIN GAME"
-
-        while game_state == "MAIN GAME": # the actual gameplay
+        while game_state == "START ": # the actual gameplay
 
             clock.tick(FRAMERATE)
 
