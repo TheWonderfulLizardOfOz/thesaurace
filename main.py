@@ -108,11 +108,10 @@ def window_resize():
 
     pygame.display.update()
 
-def fun_animation(sheet, frame_no, fractional_position, stay_alive):
+def fun_animation(sheet, frame_no, fractional_position, fps, update_frequency, stay_alive):
     current_frame = 0
     last_frame_time = time.time()
-    frame_delta = 0.02
-    update_frequency = 0.1
+    frame_delta = 1.0/fps
     while stay_alive[0] == True:
         time_since = time.time()-last_frame_time
         if time_since > update_frequency:
@@ -331,15 +330,15 @@ async def main():
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 2 - text.get_height() // 2))
 
             window_resize()
-
+            
+            start = time.perf_counter()
             check = [True]
-            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.5, 0.25), check))
+            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.5, 0.25), 50, 0.2, check))
             t1.start()
 
             goal_word, createdPath = setGoalWord(current_word, difficulties[difficulty])
 
             check[0] = False
-
             scroll = 0
 
             timer = [0, 0, 0]
