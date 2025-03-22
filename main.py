@@ -233,7 +233,7 @@ async def main():
     options = ["START"]
 
     game_state = "MAIN MENU"
-    difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
+    difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25, "SUPER PAIN": 100}
     difficulty = "NORMAL"
     
     while True:
@@ -313,6 +313,8 @@ async def main():
             scroll = 0
 
             timer = [0, 0, 0]
+
+            pygame.event.clear()
 
             while game_end == False:
 
@@ -518,9 +520,25 @@ async def main():
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
 
-            backButton = Button(font, "BACK TO MENU", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "MAIN MENU")
+            backButton = Button(font, "BACK TO MENU", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 6 * 5), "MAIN MENU")
             backButton.show(game_window)
             buttons = [backButton]
+
+            font = pygame.font.Font(resource_path("Lora.ttf"), 100)
+            text = font.render("CREDITS", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 10))
+
+            font = pygame.font.Font(resource_path("Lora.ttf"), 60)
+            text = font.render("Something by Garrance", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 120))
+            text = font.render("Something else by Dani", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 190))
+            text = font.render("A third thing by Samuel", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 260))
+
+            font = pygame.font.Font(resource_path("Lora.ttf"), 80)
+            text = font.render("~TEAM GDS~", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 400))
 
             window_resize()
 
