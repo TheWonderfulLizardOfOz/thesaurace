@@ -40,8 +40,36 @@ def sanitise_thesaurus():
         json.dump(clean_thesaurus, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
-    word = "building"
+    destination = "building"
+    searchHistory = []
     for i in range(15):
-        synonyms = get_synonyms_of(word)
-        word = random.choice()
+        synonyms = get_synonyms_of(destination)
+        if len(synonyms) > 0:
+            searchHistory.append(destination)
+            destination = random.choice(synonyms)
+        else:
+            destination = searchHistory[-1]
+            searchHistory = searchHistory[:-1]
+    word = "foundations"
     round = 0
+    history = []
+    while word != destination:
+        print(f"DESTINATION: {destination}")
+        print(f"CURRENT WORD: {word}")
+        synonyms = get_synonyms_of(word)
+        for index, synonym in enumerate(synonyms):
+            print(f"{index}: {synonym}")
+        if len(history) > 0:
+            print(f"UNDO: {history[-1]}")
+            choice = input("Select choice index or UNDO: ")
+        else:
+            choice = input("Select choice: ")
+        if choice == "UNDO":
+            word = history[-1]
+            history = history[:-1]
+        else:
+            history.append(word)
+            word = synonyms[int(choice)]
+            
+            
+        
