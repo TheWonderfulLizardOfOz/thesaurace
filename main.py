@@ -251,6 +251,9 @@ async def main():
 
             current_word = "foundations"
 
+            syn_list = gameTextPrototype.get_synonyms_of(current_word)
+            print(syn_list)
+
             goal_word = "???"
 
             history = []
