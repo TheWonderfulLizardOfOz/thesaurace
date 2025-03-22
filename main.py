@@ -483,7 +483,10 @@ async def main():
                 time_str = min_str + ":" + sec_str
 
                 texter = fonter.render(time_str, True, (0, 0, 0))
-                game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
+                game_window.blit(texter, (WINDOW_WIDTH // 3 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
+
+                texter = fonter.render(difficulty + " MODE", True, (0, 0, 0))
+                game_window.blit(texter, (WINDOW_WIDTH // 3 * 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
                 window_resize()
 
