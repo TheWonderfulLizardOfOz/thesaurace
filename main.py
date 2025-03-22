@@ -251,6 +251,8 @@ async def main():
 
             current_word = "foundations"
 
+            goal_word = "???"
+
             history = []
             
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
@@ -290,6 +292,9 @@ async def main():
 
                 texter = fonter.render("QUIT", True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH - 90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
+
+                texter = fonter.render("goal: " + goal_word, True, (0, 0, 0))
+                game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
 
