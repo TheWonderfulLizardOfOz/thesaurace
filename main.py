@@ -16,7 +16,7 @@ class Button:
         self.realLoc = (0, 0)
         self.width = 0
         self.height = 0
-        self.value = 0
+        self.value = ""
 
     def show(self, gameWindow):
         render = self.font.render(self.text, True, self.colour)
@@ -200,7 +200,7 @@ def checkMouseClick(buttons, game_state):
 def setGoalWord(currentWord, difficulty):
     back = currentWord
     i = 0
-    while i < difficulty:
+    while i <= difficulty:
         synonyms = gameTextPrototype.get_synonyms_of(currentWord)
         #print(currentWord, synonyms)
         if len(synonyms) == 0:
@@ -218,12 +218,12 @@ async def main():
     options = ["START"]
 
     game_state = "MAIN MENU"
-    difficulty = 10
+    difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
+    difficulty = "NORMAL"
     
     while True:
 
         while game_state == "MAIN MENU": # the main menu
-            buttons = []
             clock.tick(FRAMERATE)
 
             junk = random.randint(0, 20)
@@ -234,12 +234,12 @@ async def main():
 
             #game_window.blit(logo, (WINDOW_WIDTH // 2 - logo.get_width() // 2, 0))
             #game_window.blit(logotoo, (25, WINDOW_HEIGHT - 20 - logotoo.get_height()))
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 60)
+            difficultyText = font.render(" {} MODE".format(difficulty), True, (0, 0, 0))
+            game_window.blit(difficultyText, (0, 0))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
 
-            # startText = font.render("START", True, (0, 0, 0))
-            # startLoc = (WINDOW_WIDTH // 2 - startText.get_width() // 2, (WINDOW_HEIGHT // 2) - startText.get_height() // 2)
-            # game_window.blit(startText, startLoc)
             difficultyButton = Button(font, "DIFFICULTY", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "DIFFICULTY")
             difficultyButton.show(game_window)
 
@@ -291,7 +291,7 @@ async def main():
 
             window_resize()
 
-            goal_word = setGoalWord(current_word, difficulty)
+            goal_word = setGoalWord(current_word, difficulties[difficulty])
 
             scroll = 0
 
@@ -462,12 +462,11 @@ async def main():
             game_window.fill((255, 255, 255))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
-            difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
             prevHeight = WINDOW_HEIGHT // 4
-            for difficulty, value in difficulties.items():
+            for difficulty in difficulties:
                 newButton = Button(font, difficulty, (WINDOW_WIDTH // 2, prevHeight), "MAIN MENU")
                 newButton.show(game_window)
-                newButton.value = value
+                newButton.value = difficulty
                 prevHeight += newButton.height
                 buttons.append(newButton)
 
