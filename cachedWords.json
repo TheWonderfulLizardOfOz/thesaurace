@@ -24,7 +24,6 @@
         "pile",
         "hovel",
         "hall",
-        "chÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢teau",
         "estate",
         "summerhouse",
         "hutment",
@@ -42,13 +41,9 @@
         "rebuilding",
         "rearing",
         "raising",
-        "making up",
-        "setting up",
         "confecting",
-        "putting together",
         "generating",
         "organizing",
-        "putting up",
         "shaping",
         "forging",
         "molding",
@@ -78,14 +73,9 @@
         "conceiving",
         "combining",
         "fathering",
-        "cooking (up)",
-        "thinking (up)",
         "contriving",
         "reedifying",
-        "uniting",
-        "throwing up",
-        "rigging (up)",
-        "jerry-building"
+        "uniting"
     ],
     "foundations": [
         "institutions",
@@ -98,7 +88,6 @@
         "philanthropies",
         "bodies",
         "collectives",
-        "think tanks",
         "institutions",
         "institutes",
         "groups",
@@ -108,8 +97,7 @@
         "enterprises",
         "philanthropies",
         "bodies",
-        "collectives",
-        "think tanks"
+        "collectives"
     ],
     "hello": [
         "salute",

@@ -31,3 +31,12 @@ def get_synonyms_of(word):
             return -1
 
 
+def sanitise_thesaurus():
+    clean_thesaurus = {}
+    for word in thesaurus.keys():
+        clean_thesaurus[word] = list(filter(sanitiser,thesaurus[word]))
+    with open('cachedWords.json', 'w', encoding='utf-8') as f:
+        json.dump(clean_thesaurus, f, ensure_ascii=False, indent=4)
+    
+
+sanitise_thesaurus()
