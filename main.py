@@ -197,11 +197,25 @@ def checkMouseClick(buttons, game_state):
             log(("new game state: " + game_state))
     return game_state, value
 
+def loadingBar(progress, target):
+    pygame.draw.rect(game_window, (0, 0, 0), pygame.Rect(WINDOW_WIDTH * 0.1, WINDOW_HEIGHT * 0.8, WINDOW_WIDTH * 0.8, WINDOW_HEIGHT * 0.1))
+    pygame.draw.rect(game_window, (255, 255, 255), pygame.Rect(WINDOW_WIDTH * 0.12, WINDOW_HEIGHT * 0.825, WINDOW_WIDTH * 0.76, WINDOW_HEIGHT * 0.05))
+    pygame.draw.rect(game_window, (0, 0, 0),
+                     pygame.Rect(WINDOW_WIDTH * 0.12, WINDOW_HEIGHT * 0.825, WINDOW_WIDTH * 0.76 * (progress / target), WINDOW_HEIGHT * 0.05))
+    window_resize()
+
+
 def setGoalWord(currentWord, difficulty):
     createdPath = [currentWord]
     back = currentWord
     i = 0
     while i < difficulty:
+<<<<<<< Updated upstream
+
+        loadingBar(i, difficulty)
+
+=======
+>>>>>>> Stashed changes
         synonyms = gameTextPrototype.get_synonyms_of(currentWord)
         #print(currentWord, synonyms)
         if len(synonyms) == 0:
