@@ -274,10 +274,12 @@ async def main():
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
-    game_modes = ["TIMER", "TURN BASED", "IRON MAN", "LIES"]
+    game_modes = ["TIMER", "TURN BASED", "IRON MAN", "LIES", "SCORE"]
     game_mode = None
     lieCount = 0
-
+    
+    pygame.mixer.music.load(resource_path("Music.wav"))
+    pygame.mixer.music.play(-1)
     
     while True:
         noSymMessage = random.choice(noSynonyms)
@@ -362,6 +364,7 @@ async def main():
             scroll = 0
 
             timer = [0, 0, 0]
+            highscore = gameTextPrototype.get_scrabble_score_of("foundation")
 
             mousedwon = False
 
@@ -418,6 +421,9 @@ async def main():
                 elif game_mode == "TURN BASED":
                     score_str = str(len(history))
 
+                elif game_mode == "SCORE":
+                    score_str = str(highscore)
+
                 texter = fonter.render(score_str, True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
@@ -470,6 +476,8 @@ async def main():
                                         history.append(current_word)
                                         hisscroll.append(scroll)
                                         current_word = syn_list[i]
+
+                                        highscore = max(highscore, gameTextPrototype.get_scrabble_score_of(current_word))
                                         if game_mode == "LIES" and isLie(lies, current_word):
                                             choseLie = True
                                             game_end = True
@@ -571,17 +579,24 @@ async def main():
                     game_window.blit(textest, (WINDOW_WIDTH - 50 - textest.get_width(), 320 + j*50 - textest.get_height() // 2))
                     j += 1
 
-                min_str = str(timer[2])
-                if len(min_str) < 2:
-                    min_str = "0" + min_str
+                if game_mode in {"IRON MAN", "TIMER", "LIES"}:
+                    min_str = str(timer[2])
+                    if len(min_str) < 2:
+                        min_str = "0" + min_str
 
-                sec_str = str(timer[1])
-                if len(sec_str) < 2:
-                    sec_str = "0" + sec_str
+                    sec_str = str(timer[1])
+                    if len(sec_str) < 2:
+                        sec_str = "0" + sec_str
 
-                time_str = min_str + ":" + sec_str
+                    score_str = min_str + ":" + sec_str
 
-                texter = fonter.render(time_str, True, (0, 0, 0))
+                elif game_mode == "TURN BASED":
+                    score_str = str(len(history))
+
+                elif game_mode == "SCORE":
+                    score_str = str(highscore)
+
+                texter = fonter.render(score_str, True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH // 3 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
                 texter = fonter.render(difficulty + " MODE", True, (0, 0, 0))
