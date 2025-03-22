@@ -206,22 +206,29 @@ async def main():
 
         while game_state == "START": # the actual gameplay
 
-            clock.tick(FRAMERATE)
+            game_end = False
 
-            game_window.fill((255, 255, 255))
-     
-            window_resize()
+            current_word = "Foundations"
 
-            events = global_inputs()
-            
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                                    
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = "MAIN MENU"
-                        log(("new game state: " + game_state))
-                        
-            await asyncio.sleep(0)
+            while game_end == False:
+
+                clock.tick(FRAMERATE)
+
+                game_window.fill((255, 255, 255))
+        
+                window_resize()
+
+                events = global_inputs()
+                
+                for event in events:
+                    if event.type == pygame.KEYDOWN:
+                                        
+                        if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                            game_end = True
+                            game_state = "MAIN MENU"
+                            log(("new game state: " + game_state))
+                            
+                await asyncio.sleep(0)
 
 # Create width and height constants
 WINDOW_WIDTH = 960
