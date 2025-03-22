@@ -237,6 +237,8 @@ async def main():
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
     game_modes = []
+    sam = pygame.image.load("sam.png").convert()
+    sam = pygame.transform.scale(sam, (360, 270))
     
     while True:
 
@@ -248,8 +250,6 @@ async def main():
             ## display
 
             game_window.fill((255, 255, 255))
-            sam = pygame.image.load("sam.png").convert()
-            sam = pygame.transform.scale(sam, (240, 180))
             game_window.blit(sam, (WINDOW_WIDTH // 2 - sam.get_width() // 2, WINDOW_HEIGHT // 15))
 
             #game_window.blit(logo, (WINDOW_WIDTH // 2 - logo.get_width() // 2, 0))
@@ -259,17 +259,13 @@ async def main():
             game_window.blit(difficultyText, (0, 0))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
-
-
-            difficultyButton = Button(font, "DIFFICULTY", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "DIFFICULTY")
-            difficultyButton.show(game_window)
-
-            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - difficultyButton.height), "START")
-            startButton.show(game_window)
-
-            creditButton = Button(font, "CREDITS", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + difficultyButton.height), "CREDITS")
-            creditButton.show(game_window)
-            buttons = [startButton, difficultyButton, creditButton]
+            buttons = []
+            prevHeight = WINDOW_HEIGHT // 2
+            for opt in options:
+                newButton = Button(font, opt, (WINDOW_WIDTH // 2, prevHeight), opt)
+                newButton.show(game_window)
+                prevHeight += newButton.height
+                buttons.append(newButton)
 
             window_resize()
 
