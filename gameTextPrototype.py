@@ -6,7 +6,7 @@ with open('cachedWords.json', 'r') as file:
     thesaurus = json.load(file)
 
 def get_all_words():
-    return thesaurus.keys()
+    return list(thesaurus.keys())
 
 def sanitiser(word):
     for letter in word:

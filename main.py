@@ -530,7 +530,7 @@ async def main():
             if won:
                 texy = fonty.render("WIN", True, (0, 0, 0))
             elif choseLie:
-                texy = fonty.render("YOU CHOSE A LIE", True, (0, 0, 0))
+                texy = fonty.render("LIE", True, (0, 0, 0))
             else:
                 texy = fonty.render("LOSE", True, (0, 0, 0))
 
