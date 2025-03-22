@@ -429,9 +429,12 @@ async def main():
                     won = True
 
                 if console_data["Command"] == "path":
-                    log(createdPath)
                     console_data["Command"] = ""
                     console_data["Last Command"] = "path"
+                    for i in range(len(createdPath) // 4):
+                        log(createdPath[i*4:(i+1)*4])
+                        k = i
+                    log(createdPath[(k+1)*4::])
                             
                 await asyncio.sleep(0)
 
