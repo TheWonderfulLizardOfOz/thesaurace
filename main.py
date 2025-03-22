@@ -153,6 +153,7 @@ def global_inputs():
         console_data["Last Command"] = "help"
         console_data["Command"] = ""
         log("fps - turn on/off fps display")
+        log("path - logs the path")
 
     return non_global_inputs
 
@@ -514,6 +515,11 @@ async def main():
                                 rscroll -= 1
                                 if rscroll < 0:
                                     rscroll = 0
+
+                if console_data["Command"] == "path":
+                    log(createdPath)
+                    console_data["Command"] = ""
+                    console_data["Last Command"] = "path"
                             
                 await asyncio.sleep(0)
 
