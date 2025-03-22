@@ -345,11 +345,17 @@ async def main():
                 texter = fonter.render(time_str, True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
-                j = 0
-                for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
-                    textest = fontest.render(syn_list[i], True, (0, 0, 0))
-                    game_window.blit(textest, (100, 235 + j*70 - textest.get_height() // 2))
-                    j += 1
+                if len(syn_list) > 0:
+
+                    j = 0
+                    for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
+                        textest = fontest.render(syn_list[i], True, (0, 0, 0))
+                        game_window.blit(textest, (100, 235 + j*70 - textest.get_height() // 2))
+                        j += 1
+
+                else:
+                    textest = fontest.render("There's nothing here...", True, (128, 128, 128))
+                    game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 235))
         
                 window_resize()
 
@@ -364,18 +370,20 @@ async def main():
                             if ml[0] < 180 and ml[1] < 80:
                                 if len(history) > 0:
                                     current_word = history.pop()
+                                    scroll = 0
                                     syn_list = gameTextPrototype.get_synonyms_of(current_word)
                             if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                                 game_end = True
                                 game_state = "MAIN MENU"
 
-                            elif ml[1] > 200:
+                            elif ml[1] > 200 and len(syn_list) > 0:
                                 j = 0
                                 for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
                                     if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
                                         history.append(current_word)
                                         current_word = syn_list[i]
                                         syn_list = gameTextPrototype.get_synonyms_of(current_word)
+                                        scroll = 0
                                         break
                                     else:
                                         j += 1
@@ -388,6 +396,34 @@ async def main():
                             scroll -= 1
                             if scroll < 0:
                                 scroll = 0
+
+                if goal_word == current_word:
+                    game_end = True
+                            
+                await asyncio.sleep(0)
+
+            count = 30
+
+            fonty = pygame.font.Font(resource_path('Lora.ttf'), 200)
+            texy = fonty.render("WIN", True, (0, 0, 0))
+
+            while game_state != "MAIN MENU":
+                clock.tick(FRAMERATE)
+                if count > 0:
+                    count -= 1
+
+                game_window.fill((255, 255, 255))
+
+                game_window.blit(texy, (WINDOW_WIDTH // 2 - texy.get_width() // 2, 0))
+
+                window_resize()
+
+                events = global_inputs()
+
+                for event in events:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if count == 0:
+                            game_state = "MAIN MENU"
                             
                 await asyncio.sleep(0)
 
@@ -464,7 +500,7 @@ pygame.init()
 true_window = pygame.display.set_mode((960, 720), pygame.RESIZABLE)
 game_window = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
 # Set title
-pygame.display.set_caption("TEMPLATE")
+pygame.display.set_caption("Thesaurace")
 # PyGame Clock
 clock = pygame.time.Clock()
 # Blank Window
