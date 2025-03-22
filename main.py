@@ -271,12 +271,7 @@ async def main():
 
             events = global_inputs()
             
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                                    
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = "START"
-                        log(("new game state: " + game_state))    
+            for event in events: 
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button < 4:
@@ -284,7 +279,7 @@ async def main():
 
 
 
-        await asyncio.sleep(0)
+            await asyncio.sleep(0)
 
         while game_state == "START": # the actual gameplay
             if not game_mode:
