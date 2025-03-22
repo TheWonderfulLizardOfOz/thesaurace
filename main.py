@@ -280,7 +280,7 @@ async def main():
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
 
-                cur_time = time.time() - start_time
+                cur_time = get_timer(start_time)
         
                 window_resize()
 
