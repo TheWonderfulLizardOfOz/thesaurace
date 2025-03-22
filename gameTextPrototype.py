@@ -1,14 +1,14 @@
 import requests
 import json
-import time
 
 with open('cachedWords.json', 'r') as file:
     thesaurus = json.load(file)
 
 
 def sanitiser(word):
-    if not word.isalpha():
-        return False
+    for letter in word:
+        if letter not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+            return False
     return True
 
 def save_thesaurus():
@@ -31,4 +31,3 @@ def get_synonyms_of(word):
             return -1
 
 
-word = 'foundations'
