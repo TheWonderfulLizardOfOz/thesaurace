@@ -31,10 +31,4 @@ def get_synonyms_of(word):
             return -1
 
 
-
-
-start = time.perf_counter()
-save_thesaurus()
-print(time.perf_counter()-start)
-
 word = 'foundations'
