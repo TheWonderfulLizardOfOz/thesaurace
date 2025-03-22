@@ -254,11 +254,19 @@ async def main():
 
             scroll = 0
 
-            start_time = time.time()
+            timer = [0, 0, 0]
 
             while game_end == False:
 
                 clock.tick(FRAMERATE)
+
+                timer[0] += 1
+                if timer[0] == FRAMERATE:
+                    timer[0] = 0
+                    timer[1] += 1
+                    if timer[1] == 60:
+                        timer[1] = 0
+                        timer[2] += 1
 
                 game_window.fill((255, 255, 255))
 
@@ -280,7 +288,18 @@ async def main():
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
 
-                cur_time = get_timer(start_time)
+                min_str = str(timer[2])
+                if len(min_str) < 2:
+                    min_str = "0" + min_str
+
+                sec_str = str(timer[1])
+                if len(sec_str) < 2:
+                    sec_str = "0" + sec_str
+
+                time_str = min_str + ":" + sec_str
+
+                texter = fonter.render(time_str, True, (0, 0, 0))
+                game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
         
                 window_resize()
 
