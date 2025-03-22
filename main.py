@@ -211,22 +211,36 @@ async def main():
 
         while game_state == "START": # the actual gameplay
 
-            clock.tick(FRAMERATE)
+            game_end = False
 
-            game_window.fill((255, 255, 255))
-     
-            window_resize()
-
-            events = global_inputs()
+            current_word = "foundations"
             
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                                    
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = "MAIN MENU"
-                        log(("new game state: " + game_state))
-                        
-            await asyncio.sleep(0)
+            font = pygame.font.Font(resource_path('Lora.ttf'), 80)
+
+            scroll = 0
+
+            while game_end == False:
+
+                clock.tick(FRAMERATE)
+
+                game_window.fill((255, 255, 255))
+
+                text = font.render(current_word.upper(), True, (0, 0, 0))
+                game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 20))
+        
+                window_resize()
+
+                events = global_inputs()
+                
+                for event in events:
+                    if event.type == pygame.KEYDOWN:
+                                        
+                        if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                            game_end = True
+                            game_state = "MAIN MENU"
+                            log(("new game state: " + game_state))
+                            
+                await asyncio.sleep(0)
 
         while game_state == "CREDITS":
             clock.tick(FRAMERATE)
