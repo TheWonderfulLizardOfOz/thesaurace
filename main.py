@@ -346,13 +346,14 @@ async def main():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     ml = true_mouse_loc()
-                    if ml[0] < 30 + text.get_width() and ml[1] < 160 + text.get_height() and ml[0] > 30 and ml[1] > 160 and gambling_won_time == 0:
-                        gambling = go_gambling()
-                        if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
-                            gambling_won = True
-                            gambling_won_time = 30
                     if event.button < 4:
-                        game_state = checkMouseClick(buttons, game_state)[0]
+                        if ml[0] < 30 + text.get_width() and ml[1] < 160 + text.get_height() and ml[0] > 30 and ml[1] > 160 and gambling_won_time == 0:
+                            gambling = go_gambling()
+                            if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
+                                gambling_won = True
+                                gambling_won_time = 30
+                        else:
+                            game_state = checkMouseClick(buttons, game_state)[0]
 
             await asyncio.sleep(0)
 
