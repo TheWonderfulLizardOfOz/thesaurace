@@ -262,7 +262,8 @@ async def main():
                         log(("new game state: " + game_state))    
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    game_state = checkMouseClick(buttons, game_state)[0]
+                    if event.button < 4:
+                        game_state = checkMouseClick(buttons, game_state)[0]
 
 
 
@@ -450,7 +451,8 @@ async def main():
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         game_state = "MAIN MENU"
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    game_state = checkMouseClick(buttons, game_state)[0]
+                    if event.button < 4:
+                        game_state = checkMouseClick(buttons, game_state)[0]
 
             await asyncio.sleep(0)
 
@@ -481,10 +483,11 @@ async def main():
                         game_state = "MAIN MENU"
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    result = checkMouseClick(buttons, game_state)
-                    if result[0] == "MAIN MENU":
-                        difficulty = result[1]
-                        game_state = "MAIN MENU"
+                    if event.button < 4:
+                        result = checkMouseClick(buttons, game_state)
+                        if result[0] == "MAIN MENU":
+                            difficulty = result[1]
+                            game_state = "MAIN MENU"
 
             await asyncio.sleep(0)
 
