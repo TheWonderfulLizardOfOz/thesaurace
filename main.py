@@ -236,7 +236,7 @@ async def main():
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
-    game_modes = ["DEFAULT", "PLACE HOLDER"]
+    game_modes = ["TIMER", "TURN BASED", "IRON MAN"]
     game_mode = None
     sam = pygame.image.load("sam.png").convert()
     sam = pygame.transform.scale(sam, (360, 270))
@@ -343,11 +343,11 @@ async def main():
                     undocol = (0, 0, 0)
                 else:
                     undocol = (128,128,128)
+                if game_mode != "IRON MAN":
+                    texter = fonter.render("UNDO", True, undocol)
+                    game_window.blit(texter, (90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
-                texter = fonter.render("UNDO", True, undocol)
-                game_window.blit(texter, (90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
-
-                pygame.draw.rect(game_window, undocol, (5, 5, 170, 70), 5, 10)
+                    pygame.draw.rect(game_window, undocol, (5, 5, 170, 70), 5, 10)
 
                 texter = fonter.render("QUIT", True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH - 90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
@@ -384,7 +384,7 @@ async def main():
                     textest = fontest.render("There's nothing here...", True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 235))
 
-                    textest = fontest.render("I blame the API", True, (128, 128, 128))
+                    textest = fontest.render("Skill Issue", True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 305))
         
                 window_resize()
@@ -397,7 +397,7 @@ async def main():
 
                         if event.button < 4:
 
-                            if ml[0] < 180 and ml[1] < 80:
+                            if ml[0] < 180 and ml[1] < 80 and game_mode != "IRON MAN":
                                 if len(history) > 0:
                                     current_word = history.pop()
                                     scroll = hisscroll.pop()
@@ -624,7 +624,7 @@ async def main():
             for mode in game_modes:
                 newButton = Button(font, mode, (WINDOW_WIDTH // 2, prevHeight), "START")
                 newButton.show(game_window)
-                newButton.value = difficulty
+                newButton.value = mode
                 prevHeight += newButton.height
                 buttons.append(newButton)
 
