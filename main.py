@@ -265,9 +265,12 @@ def setLies(words, lieCount, syns):
 
 ### MAIN FUNCTION
 async def main():
+
+    options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL"]
+    noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
+
     words = gameTextPrototype.get_all_words()
-    options = ["START", "CREDITS", "DIFFICULTY"]
-    noSynonyms = ["I blame the API", "Skill Issue"]
+
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
@@ -642,6 +645,42 @@ async def main():
             font = pygame.font.Font(resource_path("Lora.ttf"), 80)
             text = font.render("~TEAM GDS~", True, (0, 0, 0))
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 400))
+
+            window_resize()
+
+            events = global_inputs()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        game_state = "MAIN MENU"
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button < 4:
+                        game_state = checkMouseClick(buttons, game_state)[0]
+
+            await asyncio.sleep(0)
+
+        while game_state == "TUTORIAL":
+            clock.tick(FRAMERATE)
+
+            ## display
+
+            game_window.fill((255, 255, 255))
+
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+
+            backButton = Button(font, "BACK TO MENU", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 6 * 5), "MAIN MENU")
+            backButton.show(game_window)
+            buttons = [backButton]
+
+            font = pygame.font.Font(resource_path("Lora.ttf"), 100)
+            text = font.render("TUTORIAL", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 10))
+
+            font = pygame.font.Font(resource_path("Lora.ttf"), 60)
+            text = font.render("Win the game", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 120))
 
             window_resize()
 
