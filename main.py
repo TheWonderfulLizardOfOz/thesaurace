@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests, gameTextPrototype
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time
 
 ### TEMPLATE FUNCTIONS
 class Button:
@@ -239,6 +239,8 @@ async def main():
 
             scroll = 0
 
+            start_time = time.time()
+
             while game_end == False:
 
                 clock.tick(FRAMERATE)
@@ -248,10 +250,15 @@ async def main():
                 text = font.render(current_word.upper(), True, (0, 0, 0))
                 game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 75))
 
-                texter = fonter.render("UNDO", True, (0, 0, 0))
+                if len(history) > 0:
+                    undocol = (0, 0, 0)
+                else:
+                    undocol = (128,128,128)
+
+                texter = fonter.render("UNDO", True, undocol)
                 game_window.blit(texter, (90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
-                pygame.draw.rect(game_window, (0, 0, 0), (5, 5, 170, 70), 5, 10)
+                pygame.draw.rect(game_window, undocol, (5, 5, 170, 70), 5, 10)
 
                 texter = fonter.render("QUIT", True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH - 90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
@@ -267,7 +274,8 @@ async def main():
                         ml = true_mouse_loc()
 
                         if ml[0] < 180 and ml[1] < 80:
-                            pass ## DO UNDO HERE
+                            if len(history) > 0:
+                                current_word = history.pop()
                         if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                             game_end = True
                             game_state = "MAIN MENU"
