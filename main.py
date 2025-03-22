@@ -263,6 +263,12 @@ def setLies(words, lieCount, syns):
         i += 1
     return lies
 
+def go_gambling():
+    return [rand_col(), rand_col(), rand_col()]
+
+def rand_col():
+    return (random.randint(1, 2) * 128 - 64, random.randint(1, 2) * 128 - 64, random.randint(1, 2) * 128 - 64)
+
 ### MAIN FUNCTION
 async def main():
 
@@ -280,11 +286,22 @@ async def main():
     
     pygame.mixer.music.load(resource_path("Music.wav"))
     pygame.mixer.music.play(-1)
+
+    gambling_won = True
+    while gambling_won:
+        gambling_won = False
+        gambling = go_gambling()
+        if gambling[0] == gambling[1] and gambling[1] == gambling[2]:
+            gambling_won = True
+    gambling_won_time = 0
     
     while True:
         noSymMessage = random.choice(noSynonyms)
         while game_state == "MAIN MENU": # the main menu
             clock.tick(FRAMERATE)
+
+            if gambling_won_time > 0:
+                gambling_won_time -= 1
 
             junk = random.randint(0, 20)
 
@@ -308,6 +325,19 @@ async def main():
                 prevHeight += newButton.height
                 buttons.append(newButton)
 
+            for i in range(3):
+                pygame.draw.rect(game_window, gambling[i], (30 + 60*i, 100, 60, 60))
+
+            if gambling_won_time > 0:
+                gambling_won = True
+                font = pygame.font.Font(resource_path('Lora.ttf'), 20)
+                text = font.render("GAMBLING WIN!", True, (0, 0, 0))
+                game_window.blit(text, (30, 100-text.get_height()))
+                
+            font = pygame.font.Font(resource_path('Lora.ttf'), 30)
+            text = font.render("GO GAMBLE", True, (0, 0, 0))
+            game_window.blit(text, (30, 160))
+
             window_resize()
 
             events = global_inputs()
@@ -315,10 +345,14 @@ async def main():
             for event in events: 
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    ml = true_mouse_loc()
+                    if ml[0] < 30 + text.get_width() and ml[1] < 160 + text.get_height() and ml[0] > 30 and ml[1] > 160 and gambling_won_time == 0:
+                        gambling = go_gambling()
+                        if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
+                            gambling_won = True
+                            gambling_won_time = 30
                     if event.button < 4:
                         game_state = checkMouseClick(buttons, game_state)[0]
-
-
 
             await asyncio.sleep(0)
 
