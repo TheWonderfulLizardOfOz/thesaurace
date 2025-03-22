@@ -284,6 +284,8 @@ async def main():
                 game_window.blit(texter, (WINDOW_WIDTH - 90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
+
+                cur_time = get_timer(start_time)
         
                 window_resize()
 
