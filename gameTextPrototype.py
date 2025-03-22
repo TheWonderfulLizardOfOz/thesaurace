@@ -1,5 +1,6 @@
 import requests
 import json
+import random
 
 with open('cachedWords.json', 'r') as file:
     thesaurus = json.load(file)
@@ -22,9 +23,7 @@ def get_synonyms_of(word):
         api_url = 'https://api.api-ninjas.com/v1/thesaurus?word={}'.format(word)
         response = requests.get(api_url, headers={'X-Api-Key': 'Aqv8rZ0xlEOBQjnTf4cCrw==B6zBflzo1sc2Sz6D'})
         if response.status_code == requests.codes.ok:
-            print(f"Unsanitised length: {len(response.json()["synonyms"])}")
             sanitised = sorted(list(set(filter(sanitiser,response.json()["synonyms"]))))
-            print(f"Sanitised length: {len(sanitised)}")
             thesaurus[word] = sanitised
             save_thesaurus()
             return thesaurus[word]
@@ -40,3 +39,9 @@ def sanitise_thesaurus():
     with open('cachedWords.json', 'w', encoding='utf-8') as f:
         json.dump(clean_thesaurus, f, ensure_ascii=False, indent=4)
 
+if __name__ == "__main__":
+    word = "building"
+    for i in range(15):
+        synonyms = get_synonyms_of(word)
+        word = random.choice()
+    round = 0
