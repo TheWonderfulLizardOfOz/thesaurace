@@ -333,8 +333,10 @@ async def main():
             
             start = time.perf_counter()
             check = [True]
-            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.5, 0.25), 50, 0.2, check))
+            t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.3, 0.25), 50, 0.1, check))
             t1.start()
+            t2 = threading.Thread(target=fun_animation, args=(miku, 38, (0.7, 0.25), 19, 0.1, check))
+            t2.start()
 
             goal_word, createdPath = setGoalWord(current_word, difficulties[difficulty])
 
