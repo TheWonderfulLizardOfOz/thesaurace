@@ -102,5 +102,18 @@
         "salute",
         "welcome",
         "wishes"
-    ]
+    ],
+    "foundation": [
+        "body",
+        "charity",
+        "collective",
+        "corporation",
+        "enterprise",
+        "establishment",
+        "group",
+        "institute",
+        "institution",
+        "philanthropy"
+    ],
+    "get up": []
 }
