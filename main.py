@@ -209,12 +209,19 @@ async def main():
             game_end = False
 
             current_word = "Foundations"
+            
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+
+            scroll = 0
 
             while game_end == False:
 
                 clock.tick(FRAMERATE)
 
                 game_window.fill((255, 255, 255))
+
+                text = font.render("START", True, (0, 0, 0))
+                game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 350 - text.get_height() // 2))
         
                 window_resize()
 
