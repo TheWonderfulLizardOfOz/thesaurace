@@ -270,8 +270,6 @@ async def main():
     noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
 
     words = gameTextPrototype.get_all_words()
-    options = ["START", "CREDITS", "DIFFICULTY"]
-    noSynonyms = ["I blame the API", "Skill Issue"]
 
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
