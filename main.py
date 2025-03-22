@@ -199,7 +199,7 @@ def setGoalWord(currentWord, difficulty):
     i = 0
     while i < 15:
         synonyms = gameTextPrototype.get_synonyms_of(currentWord)
-        print(currentWord, synonyms)
+        #print(currentWord, synonyms)
         if len(synonyms) == 0:
             currentWord = back
             i -= 1
