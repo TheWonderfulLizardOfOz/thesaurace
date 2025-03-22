@@ -238,7 +238,7 @@ async def main():
     difficulty = "NORMAL"
     game_modes = []
     sam = pygame.image.load("sam.png").convert()
-    sam = pygame.transform.scale(sam, (240, 180))
+    sam = pygame.transform.scale(sam, (360, 270))
     
     while True:
 
@@ -259,17 +259,13 @@ async def main():
             game_window.blit(difficultyText, (0, 0))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
-
-
-            difficultyButton = Button(font, "DIFFICULTY", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "DIFFICULTY")
-            difficultyButton.show(game_window)
-
-            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - difficultyButton.height), "START")
-            startButton.show(game_window)
-
-            creditsButton = Button(font, "CREDITS", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + difficultyButton.height), "CREDITS")
-            creditsButton.show(game_window)
-            buttons = [startButton, difficultyButton, creditsButton]
+            buttons = []
+            prevHeight = WINDOW_HEIGHT // 2
+            for opt in options:
+                newButton = Button(font, opt, (WINDOW_WIDTH // 2, prevHeight), opt)
+                newButton.show(game_window)
+                prevHeight += newButton.height
+                buttons.append(newButton)
 
             window_resize()
 
