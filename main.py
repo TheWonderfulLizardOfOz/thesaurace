@@ -194,6 +194,21 @@ def checkMouseClick(buttons, game_state):
             log(("new game state: " + game_state))
     return game_state
 
+def setGoalWord(currentWord, difficulty):
+    back = currentWord
+    i = 0
+    while i < 15:
+        synonyms = gameTextPrototype.get_synonyms_of(currentWord)
+        print(currentWord, synonyms)
+        if len(synonyms) == 0:
+            currentWord = back
+            i -= 1
+        else:
+            back = currentWord
+            currentWord = random.choice(synonyms)
+        i += 1
+    return currentWord
+
 ### MAIN FUNCTION
 async def main():
 
@@ -253,7 +268,7 @@ async def main():
 
             syn_list = gameTextPrototype.get_synonyms_of(current_word)
 
-            goal_word = "???"
+            goal_word = setGoalWord(current_word, 15)
 
             history = []
             
