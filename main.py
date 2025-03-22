@@ -246,6 +246,9 @@ async def main():
             ## display
 
             game_window.fill((255, 255, 255))
+            sam = pygame.image.load("sam.png").convert()
+            sam = pygame.transform.scale(sam, (240, 180))
+            game_window.blit(sam, (WINDOW_WIDTH // 2 - sam.get_width() // 2, WINDOW_HEIGHT // 15))
 
             #game_window.blit(logo, (WINDOW_WIDTH // 2 - logo.get_width() // 2, 0))
             #game_window.blit(logotoo, (25, WINDOW_HEIGHT - 20 - logotoo.get_height()))
