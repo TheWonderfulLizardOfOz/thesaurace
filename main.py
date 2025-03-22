@@ -116,7 +116,7 @@ def fun_animation(sheet, frame_no, fractional_position, fps, update_frequency, s
         time_since = time.time()-last_frame_time
         if time_since > update_frequency:
             last_frame_time = time.time()
-            current_frame = int(current_frame + ((time_since)/frame_delta)) % frame_no 
+            current_frame = int(current_frame + ((time_since)/frame_delta)) % frame_no
             frame_width = int(sheet.get_width()/frame_no)
             frame_height = sheet.get_height()
             position = ((WINDOW_WIDTH*fractional_position[0])-(frame_width/2),(WINDOW_HEIGHT*fractional_position[1])-(frame_height/2))
@@ -248,18 +248,39 @@ def setGoalWord(currentWord, difficulty):
             i += 1
     return currentWord, createdPath
 
+def isLie(lies, choice):
+    return choice in lies
+
+def setLies(words, lieCount, syns):
+    lies = []
+    synsSet = set(syns)
+    i = 0
+    while i < lieCount:
+        choice = random.choice(words)
+        if choice in synsSet:
+            continue
+        lies.append(random.choice(words))
+        i += 1
+    return lies
+
 ### MAIN FUNCTION
 async def main():
 
     options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL"]
     noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
+
+    words = gameTextPrototype.get_all_words()
+    options = ["START", "CREDITS", "DIFFICULTY"]
+    noSynonyms = ["I blame the API", "Skill Issue"]
+
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
-    game_modes = ["TIMER", "TURN BASED", "IRON MAN"]
+    game_modes = ["TIMER", "TURN BASED", "IRON MAN", "LIES"]
     game_mode = None
     sam = pygame.image.load("sam.png").convert()
     sam = pygame.transform.scale(sam, (360, 270))
+    lieCount = 0
 
     
     while True:
@@ -309,6 +330,7 @@ async def main():
                 break
 
             game_end = False
+            choseLie = False
             won = False
 
             current_word = "foundations"
@@ -330,7 +352,7 @@ async def main():
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3 * 2 - text.get_height() // 2))
 
             window_resize()
-            
+
             start = time.perf_counter()
             check = [True]
             t1 = threading.Thread(target=fun_animation, args=(duck, 50, (0.3, 0.3), 50, 0.1, check))
@@ -346,6 +368,8 @@ async def main():
             timer = [0, 0, 0]
 
             mousedwon = False
+
+            lies = []
 
             pygame.event.clear()
 
@@ -384,7 +408,7 @@ async def main():
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
                 score_str = ""
-                if game_mode in {"IRON MAN", "TIMER"}:
+                if game_mode in {"IRON MAN", "TIMER", "LIES"}:
                     min_str = str(timer[2])
                     if len(min_str) < 2:
                         min_str = "0" + min_str
@@ -434,17 +458,30 @@ async def main():
                                     current_word = history.pop()
                                     scroll = hisscroll.pop()
                                     syn_list = gameTextPrototype.get_synonyms_of(current_word)
-                            if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
+
+                                    if game_mode == "LIES" and len(syn_list) > 0:
+                                        lies = setLies(words, lieCount, syn_list)
+                                        syn_list = sorted(syn_list + lies)
+
+                            if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80 :
                                 game_end = True
 
                             elif ml[1] > 200 and len(syn_list) > 0 and ml[0] > 60:
                                 j = 0
                                 for i in range(scroll, min(scroll + 6, len(syn_list))):
                                     if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
+                                        lieCount += 1
                                         history.append(current_word)
                                         hisscroll.append(scroll)
                                         current_word = syn_list[i]
+                                        if game_mode == "LIES" and isLie(lies, current_word):
+                                            choseLie = True
+                                            game_end = True
+
                                         syn_list = gameTextPrototype.get_synonyms_of(current_word)
+                                        if game_mode == "LIES" and len(syn_list) > 0:
+                                            lies = setLies(words, lieCount, syn_list)
+                                            syn_list = sorted(syn_list + lies)
                                         scroll = 0
                                         break
                                     else:
@@ -492,8 +529,10 @@ async def main():
 
             fonty = pygame.font.Font(resource_path('Lora.ttf'), 150)
 
-            if won == True:
+            if won:
                 texy = fonty.render("WIN", True, (0, 0, 0))
+            elif choseLie:
+                texy = fonty.render("YOU CHOSE A LIE", True, (0, 0, 0))
             else:
                 texy = fonty.render("LOSE", True, (0, 0, 0))
 
@@ -557,6 +596,7 @@ async def main():
                         if count == 0 and event.button < 4:
                             game_mode = None
                             game_state = "MAIN MENU"
+                            lieCount = 0
 
                         elif event.button == 5:
                             if ml[0] < WINDOW_WIDTH // 2:
