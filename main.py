@@ -153,6 +153,7 @@ def global_inputs():
         console_data["Last Command"] = "help"
         console_data["Command"] = ""
         log("fps - turn on/off fps display")
+        log("path - logs the path")
 
     return non_global_inputs
 
@@ -426,6 +427,11 @@ async def main():
                 if goal_word == current_word:
                     game_end = True
                     won = True
+
+                if console_data["Command"] == "path":
+                    log(createdPath)
+                    console_data["Command"] = ""
+                    console_data["Last Command"] = "path"
                             
                 await asyncio.sleep(0)
 
