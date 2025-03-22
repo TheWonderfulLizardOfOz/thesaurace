@@ -240,8 +240,10 @@ async def main():
     game_mode = None
     sam = pygame.image.load("sam.png").convert()
     sam = pygame.transform.scale(sam, (360, 270))
+
     
     while True:
+        noSymMessage = random.choice(noSynonyms)
         while game_state == "MAIN MENU": # the main menu
             clock.tick(FRAMERATE)
 
@@ -353,18 +355,22 @@ async def main():
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
+                score_str = ""
+                if game_mode in {"IRON MAN", "TIMER"}:
+                    min_str = str(timer[2])
+                    if len(min_str) < 2:
+                        min_str = "0" + min_str
 
-                min_str = str(timer[2])
-                if len(min_str) < 2:
-                    min_str = "0" + min_str
+                    sec_str = str(timer[1])
+                    if len(sec_str) < 2:
+                        sec_str = "0" + sec_str
 
-                sec_str = str(timer[1])
-                if len(sec_str) < 2:
-                    sec_str = "0" + sec_str
+                    score_str = min_str + ":" + sec_str
 
-                time_str = min_str + ":" + sec_str
+                elif game_mode == "TURN BASED":
+                    score_str = str(len(history))
 
-                texter = fonter.render(time_str, True, (0, 0, 0))
+                texter = fonter.render(score_str, True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
                 if len(syn_list) > 0:
@@ -381,7 +387,7 @@ async def main():
                     textest = fontest.render("There's nothing here...", True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 235))
 
-                    textest = fontest.render(random.choice(noSynonyms), True, (128, 128, 128))
+                    textest = fontest.render(noSymMessage, True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 305))
         
                 window_resize()
@@ -396,6 +402,7 @@ async def main():
 
                             if ml[0] < 180 and ml[1] < 80 and game_mode != "IRON MAN":
                                 if len(history) > 0:
+                                    noSymMessage = random.choice(noSynonyms)
                                     current_word = history.pop()
                                     scroll = hisscroll.pop()
                                     syn_list = gameTextPrototype.get_synonyms_of(current_word)
