@@ -382,7 +382,7 @@ async def main():
 
                             elif ml[1] > 200 and len(syn_list) > 0:
                                 j = 0
-                                for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
+                                for i in range(scroll, min(scroll + 6, len(syn_list))):
                                     if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
                                         history.append(current_word)
                                         current_word = syn_list[i]
@@ -408,10 +408,12 @@ async def main():
 
             count = 30
 
-            fonty = pygame.font.Font(resource_path('Lora.ttf'), 200)
+            fonty = pygame.font.Font(resource_path('Lora.ttf'), 150)
             texy = fonty.render("WIN", True, (0, 0, 0))
 
             lscroll = 0
+
+            history.append(current_word)
 
             while game_state != "MAIN MENU":
                 clock.tick(FRAMERATE)
@@ -440,8 +442,8 @@ async def main():
                         elif event.button == 5:
                             if ml[0] < WINDOW_WIDTH // 2:
                                 lscroll += 1
-                                if lscroll > len(syn_list) - 2:
-                                    lscroll = len(syn_list) - 2
+                                if lscroll > len(history) - 2:
+                                    lscroll = len(history) - 2
                         elif event.button == 4:
                             if ml[0] < WINDOW_WIDTH // 2:
                                 lscroll -= 1
