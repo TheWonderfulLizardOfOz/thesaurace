@@ -174,6 +174,7 @@ def global_inputs():
         console_data["Last Command"] = "help"
         console_data["Command"] = ""
         log("fps - turn on/off fps display")
+        log("path - logs the path")
 
     return non_global_inputs
 
@@ -251,14 +252,19 @@ def setGoalWord(currentWord, difficulty):
 ### MAIN FUNCTION
 async def main():
 
-    options = ["START"]
-
+    options = ["START", "CREDITS", "DIFFICULTY"]
+    noSynonyms = ["I blame the API", "Skill Issue"]
     game_state = "MAIN MENU"
     difficulties = {"VERY EASY": 2, "EASY": 6, "NORMAL": 10, "HARD": 15, "PAIN": 25}
     difficulty = "NORMAL"
+    game_modes = ["TIMER", "TURN BASED", "IRON MAN"]
+    game_mode = None
+    sam = pygame.image.load("sam.png").convert()
+    sam = pygame.transform.scale(sam, (360, 270))
+
     
     while True:
-
+        noSymMessage = random.choice(noSynonyms)
         while game_state == "MAIN MENU": # the main menu
             clock.tick(FRAMERATE)
 
@@ -267,8 +273,6 @@ async def main():
             ## display
 
             game_window.fill((255, 255, 255))
-            sam = pygame.image.load("sam.png").convert()
-            sam = pygame.transform.scale(sam, (240, 180))
             game_window.blit(sam, (WINDOW_WIDTH // 2 - sam.get_width() // 2, WINDOW_HEIGHT // 15))
 
             #game_window.blit(logo, (WINDOW_WIDTH // 2 - logo.get_width() // 2, 0))
@@ -278,27 +282,19 @@ async def main():
             game_window.blit(difficultyText, (0, 0))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
-
-            difficultyButton = Button(font, "DIFFICULTY", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2), "DIFFICULTY")
-            difficultyButton.show(game_window)
-
-            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - difficultyButton.height), "START")
-            startButton.show(game_window)
-
-            creditButton = Button(font, "CREDITS", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + difficultyButton.height), "CREDITS")
-            creditButton.show(game_window)
-            buttons = [startButton, difficultyButton, creditButton]
+            buttons = []
+            prevHeight = WINDOW_HEIGHT // 2
+            for opt in options:
+                newButton = Button(font, opt, (WINDOW_WIDTH // 2, prevHeight), opt)
+                newButton.show(game_window)
+                prevHeight += newButton.height
+                buttons.append(newButton)
 
             window_resize()
 
             events = global_inputs()
             
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                                    
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        game_state = "START"
-                        log(("new game state: " + game_state))    
+            for event in events: 
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button < 4:
@@ -306,9 +302,12 @@ async def main():
 
 
 
-        await asyncio.sleep(0)
+            await asyncio.sleep(0)
 
         while game_state == "START": # the actual gameplay
+            if not game_mode:
+                game_state = "GAME MODE"
+                break
 
             game_end = False
             won = False
@@ -318,6 +317,7 @@ async def main():
             syn_list = gameTextPrototype.get_synonyms_of(current_word)
 
             history = []
+            hisscroll = []
             
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
             
@@ -344,6 +344,8 @@ async def main():
 
             timer = [0, 0, 0]
 
+            mousedwon = False
+
             pygame.event.clear()
 
             while game_end == False:
@@ -367,11 +369,11 @@ async def main():
                     undocol = (0, 0, 0)
                 else:
                     undocol = (128,128,128)
+                if game_mode != "IRON MAN":
+                    texter = fonter.render("UNDO", True, undocol)
+                    game_window.blit(texter, (90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
-                texter = fonter.render("UNDO", True, undocol)
-                game_window.blit(texter, (90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
-
-                pygame.draw.rect(game_window, undocol, (5, 5, 170, 70), 5, 10)
+                    pygame.draw.rect(game_window, undocol, (5, 5, 170, 70), 5, 10)
 
                 texter = fonter.render("QUIT", True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH - 90 - texter.get_width() // 2, 40 - texter.get_height() // 2))
@@ -380,21 +382,27 @@ async def main():
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, 40 - texter.get_height() // 2))
 
                 pygame.draw.rect(game_window, (0, 0, 0), (WINDOW_WIDTH - 175, 5, 170, 70), 5, 10)
+                score_str = ""
+                if game_mode in {"IRON MAN", "TIMER"}:
+                    min_str = str(timer[2])
+                    if len(min_str) < 2:
+                        min_str = "0" + min_str
 
-                min_str = str(timer[2])
-                if len(min_str) < 2:
-                    min_str = "0" + min_str
+                    sec_str = str(timer[1])
+                    if len(sec_str) < 2:
+                        sec_str = "0" + sec_str
 
-                sec_str = str(timer[1])
-                if len(sec_str) < 2:
-                    sec_str = "0" + sec_str
+                    score_str = min_str + ":" + sec_str
 
-                time_str = min_str + ":" + sec_str
+                elif game_mode == "TURN BASED":
+                    score_str = str(len(history))
 
-                texter = fonter.render(time_str, True, (0, 0, 0))
+                texter = fonter.render(score_str, True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
                 if len(syn_list) > 0:
+
+                    pygame.draw.rect(game_window, (128, 128, 128), (20, 225 + scroll * (350 / len(syn_list)), 20, 50))
 
                     j = 0
                     for i in range(scroll, min(scroll + 6, len(syn_list))):
@@ -406,7 +414,7 @@ async def main():
                     textest = fontest.render("There's nothing here...", True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 235))
 
-                    textest = fontest.render("I blame the API", True, (128, 128, 128))
+                    textest = fontest.render(noSymMessage, True, (128, 128, 128))
                     game_window.blit(textest, (WINDOW_WIDTH // 2 - textest.get_width() // 2, 305))
         
                 window_resize()
@@ -419,25 +427,30 @@ async def main():
 
                         if event.button < 4:
 
-                            if ml[0] < 180 and ml[1] < 80:
+                            if ml[0] < 180 and ml[1] < 80 and game_mode != "IRON MAN":
                                 if len(history) > 0:
+                                    noSymMessage = random.choice(noSynonyms)
                                     current_word = history.pop()
-                                    scroll = 0
+                                    scroll = hisscroll.pop()
                                     syn_list = gameTextPrototype.get_synonyms_of(current_word)
                             if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                                 game_end = True
 
-                            elif ml[1] > 200 and len(syn_list) > 0:
+                            elif ml[1] > 200 and len(syn_list) > 0 and ml[0] > 60:
                                 j = 0
                                 for i in range(scroll, min(scroll + 6, len(syn_list))):
                                     if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
                                         history.append(current_word)
+                                        hisscroll.append(scroll)
                                         current_word = syn_list[i]
                                         syn_list = gameTextPrototype.get_synonyms_of(current_word)
                                         scroll = 0
                                         break
                                     else:
                                         j += 1
+                            
+                            elif ml[1] > 200 and len(syn_list) > 0 and ml[0] < 60:
+                                mousedwon = True
 
                         elif event.button == 5:
                             scroll += 1
@@ -448,9 +461,25 @@ async def main():
                             if scroll < 0:
                                 scroll = 0
 
+                    if event.type == pygame.MOUSEBUTTONUP and mousedwon == True:
+                        mousedwon = False
+
+                if mousedwon:
+                    ml = true_mouse_loc()
+                    temp = ml[1] - 225
+                    scroll = int(temp // (350 / len(syn_list)))
+
                 if goal_word == current_word:
                     game_end = True
                     won = True
+
+                if console_data["Command"] == "path":
+                    console_data["Command"] = ""
+                    console_data["Last Command"] = "path"
+                    for i in range(len(createdPath) // 4):
+                        log(createdPath[i*4:(i+1)*4])
+                        k = i
+                    log(createdPath[(k+1)*4::])
                             
                 await asyncio.sleep(0)
 
@@ -521,6 +550,7 @@ async def main():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         ml = true_mouse_loc()
                         if count == 0 and event.button < 4:
+                            game_mode = None
                             game_state = "MAIN MENU"
 
                         elif event.button == 5:
@@ -562,7 +592,7 @@ async def main():
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 10))
 
             font = pygame.font.Font(resource_path("Lora.ttf"), 60)
-            text = font.render("Something by Garrance", True, (0, 0, 0))
+            text = font.render("Something by Garance", True, (0, 0, 0))
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 120))
             text = font.render("Something else by Dani", True, (0, 0, 0))
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 190))
@@ -620,6 +650,42 @@ async def main():
                         if result[0] == "MAIN MENU":
                             difficulty = result[1]
                             game_state = "MAIN MENU"
+
+            await asyncio.sleep(0)
+
+        while game_state == "GAME MODE":
+            clock.tick(FRAMERATE)
+            buttons = []
+            ## display
+
+            game_window.fill((255, 255, 255))
+
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+            prevHeight = WINDOW_HEIGHT // len(game_modes)
+
+            for mode in game_modes:
+                newButton = Button(font, mode, (WINDOW_WIDTH // 2, prevHeight), "START")
+                newButton.show(game_window)
+                newButton.value = mode
+                prevHeight += newButton.height
+                buttons.append(newButton)
+
+            window_resize()
+
+            events = global_inputs()
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        game_state = "MAIN MENU"
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button < 4:
+                        result = checkMouseClick(buttons, game_state)
+                        if result[0] == "START":
+                            game_mode = result[1]
+                            game_state = "START"
 
             await asyncio.sleep(0)
 
