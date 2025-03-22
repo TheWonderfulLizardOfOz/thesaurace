@@ -197,6 +197,10 @@ async def main():
                     if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         game_state = "START"
                         log(("new game state: " + game_state))    
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    mouse_loc = true_mouse_loc()
                         
             await asyncio.sleep(0)
 
