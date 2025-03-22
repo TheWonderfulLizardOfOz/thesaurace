@@ -532,7 +532,7 @@ async def main():
             elif choseLie:
                 texy = fonty.render("LIE", True, (0, 0, 0))
             else:
-                texy = fonty.render("LOSE", True, (0, 0, 0))
+                texy = fonty.render("GAVE UP", True, (0, 0, 0))
 
             lscroll = 0
             rscroll = 0
@@ -548,7 +548,7 @@ async def main():
 
                 game_window.blit(texy, (WINDOW_WIDTH // 2 - texy.get_width() // 2, 0))
 
-                if won == True:
+                if True:
 
                     textest = fontest.render("YOUR PATH", True, (0, 0, 0))
                     game_window.blit(textest, (WINDOW_WIDTH // 4 - textest.get_width() // 2, 250 - textest.get_height() // 2))
@@ -564,7 +564,12 @@ async def main():
 
                 j = 0
                 for i in range(rscroll, min(rscroll + 7, len(createdPath))):
-                    textest = fonter.render(createdPath[i], True, (0, 0, 0))
+                    col = (0, 0, 0)
+                    if won == False:
+                        col = (64, 0, 0)
+                        if createdPath[i] in history:
+                            col = (0, 64, 0)
+                    textest = fonter.render(createdPath[i], True, col)
                     game_window.blit(textest, (WINDOW_WIDTH - 50 - textest.get_width(), 320 + j*50 - textest.get_height() // 2))
                     j += 1
 
@@ -636,11 +641,11 @@ async def main():
 
             font = pygame.font.Font(resource_path("Lora.ttf"), 60)
             text = font.render("Something by Garance", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 120))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 130))
             text = font.render("Something else by Dani", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 190))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 200))
             text = font.render("A third thing by Samuel", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 260))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 270))
 
             font = pygame.font.Font(resource_path("Lora.ttf"), 80)
             text = font.render("~TEAM GDS~", True, (0, 0, 0))
@@ -679,8 +684,14 @@ async def main():
             game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 10))
 
             font = pygame.font.Font(resource_path("Lora.ttf"), 60)
-            text = font.render("Win the game", True, (0, 0, 0))
-            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 120))
+            text = font.render('Starting from "foundations",', True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 140))
+            text = font.render('you are given a list of synonyms.', True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 220))
+            text = font.render('Try to reach the goal by choosing', True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 300))
+            text = font.render('synonyms to jump to!', True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, 380))
 
             window_resize()
 
