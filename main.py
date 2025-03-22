@@ -2,6 +2,21 @@
 import random, pygame, sys, os, asyncio, requests
 
 ### TEMPLATE FUNCTIONS
+class Button:
+    def __init__(self, font, text, loc, colour=None):
+        self.font = font
+        self.text = text
+        if colour:
+            self.colour = colour
+        else:
+            self.colour = (0, 0, 0)
+        self.font.render(self.text, True, self.colour)
+        self.loc = loc
+
+    def show(self, gameWindow):
+        render = self.font.render(self.text, True, self.colour)
+        gameWindow.blit(render, (self.loc[0] - render.get_width() // 2, self.loc[1] - render.get_height() // 2))
+
 
 def resource_path(relative_path):
 
@@ -183,10 +198,11 @@ async def main():
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
 
-            startText = font.render("START", True, (0, 0, 0))
-            startLoc = (WINDOW_WIDTH // 2 - startText.get_width() // 2, (WINDOW_HEIGHT // 2) - startText.get_height() // 2)
-            game_window.blit(startText, startLoc)
-
+            # startText = font.render("START", True, (0, 0, 0))
+            # startLoc = (WINDOW_WIDTH // 2 - startText.get_width() // 2, (WINDOW_HEIGHT // 2) - startText.get_height() // 2)
+            # game_window.blit(startText, startLoc)
+            startButton = Button(font, "START", (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+            startButton.show(game_window)
             creditsText = font.render("CREDITS", True, (0, 0, 0))
             creditsLoc = (WINDOW_WIDTH // 2 - creditsText.get_width() // 2, (WINDOW_HEIGHT // 2) + creditsText.get_height() // 2)
             game_window.blit(creditsText, creditsLoc)
