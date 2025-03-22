@@ -340,7 +340,7 @@ async def main():
                 j = 0
                 for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
                     textest = fontest.render(syn_list[i], True, (0, 0, 0))
-                    game_window.blit(textest, (100, 200 + j*65))
+                    game_window.blit(textest, (100, 235 + j*70 - textest.get_height() // 2))
                     j += 1
         
                 window_resize()
@@ -356,14 +356,26 @@ async def main():
                             if ml[0] < 180 and ml[1] < 80:
                                 if len(history) > 0:
                                     current_word = history.pop()
+                                    syn_list = gameTextPrototype.get_synonyms_of(current_word)
                             if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                                 game_end = True
                                 game_state = "MAIN MENU"
 
-                        if event.button == 5:
+                            elif ml[1] > 200:
+                                j = 0
+                                for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
+                                    if ml[1] > 235 + j*70 - 35 and ml[1] < 235 + j*70 + 35:
+                                        history.append(current_word)
+                                        current_word = syn_list[i]
+                                        syn_list = gameTextPrototype.get_synonyms_of(current_word)
+                                        break
+                                    else:
+                                        j += 1
+
+                        elif event.button == 5:
                             scroll += 1
-                            if scroll > len(syn_list) - 1:
-                                scroll = len(syn_list) - 1
+                            if scroll > len(syn_list) - 2:
+                                scroll = len(syn_list) - 2
                         elif event.button == 4:
                             scroll -= 1
                             if scroll < 0:
