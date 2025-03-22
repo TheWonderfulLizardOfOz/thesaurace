@@ -252,7 +252,6 @@ async def main():
             current_word = "foundations"
 
             syn_list = gameTextPrototype.get_synonyms_of(current_word)
-            print(syn_list)
 
             goal_word = "???"
 
@@ -261,6 +260,8 @@ async def main():
             font = pygame.font.Font(resource_path('Lora.ttf'), 80)
             
             fonter = pygame.font.Font(resource_path('Lora.ttf'), 50)
+
+            fontest = pygame.font.Font(resource_path('Lora.ttf'), 65)
 
             scroll = 0
 
@@ -313,6 +314,12 @@ async def main():
 
                 texter = fonter.render(time_str, True, (0, 0, 0))
                 game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
+
+                j = 0
+                for i in range(scroll, min(scroll + 6, len(syn_list) - 1)):
+                    textest = fontest.render(syn_list[i], True, (0, 0, 0))
+                    game_window.blit(textest, (100, 200 + j*65))
+                    j += 1
         
                 window_resize()
 
@@ -322,12 +329,23 @@ async def main():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         ml = true_mouse_loc()
 
-                        if ml[0] < 180 and ml[1] < 80:
-                            if len(history) > 0:
-                                current_word = history.pop()
-                        if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
-                            game_end = True
-                            game_state = "MAIN MENU"
+                        if event.button < 4:
+
+                            if ml[0] < 180 and ml[1] < 80:
+                                if len(history) > 0:
+                                    current_word = history.pop()
+                            if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
+                                game_end = True
+                                game_state = "MAIN MENU"
+
+                        if event.button == 5:
+                            scroll += 1
+                            if scroll > len(syn_list) - 1:
+                                scroll = len(syn_list) - 1
+                        elif event.button == 4:
+                            scroll -= 1
+                            if scroll < 0:
+                                scroll = 0
                             
                 await asyncio.sleep(0)
 
