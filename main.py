@@ -206,6 +206,7 @@ def setGoalWord(currentWord, difficulty):
         #print(currentWord, synonyms)
         if len(synonyms) == 0:
             currentWord = back
+            createdPath.pop()
             i -= 1
 
         else:
@@ -275,6 +276,7 @@ async def main():
         while game_state == "START": # the actual gameplay
 
             game_end = False
+            won = False
 
             current_word = "foundations"
 
@@ -381,7 +383,6 @@ async def main():
                                     syn_list = gameTextPrototype.get_synonyms_of(current_word)
                             if ml[0] > WINDOW_WIDTH - 180 and ml[1] < 80:
                                 game_end = True
-                                game_state = "MAIN MENU"
 
                             elif ml[1] > 200 and len(syn_list) > 0:
                                 j = 0
@@ -406,13 +407,18 @@ async def main():
 
                 if goal_word == current_word:
                     game_end = True
+                    won = True
                             
                 await asyncio.sleep(0)
 
             count = 30
 
             fonty = pygame.font.Font(resource_path('Lora.ttf'), 150)
-            texy = fonty.render("WIN", True, (0, 0, 0))
+
+            if won == True:
+                texy = fonty.render("WIN", True, (0, 0, 0))
+            else:
+                texy = fonty.render("LOSE", True, (0, 0, 0))
 
             lscroll = 0
             rscroll = 0
@@ -428,23 +434,38 @@ async def main():
 
                 game_window.blit(texy, (WINDOW_WIDTH // 2 - texy.get_width() // 2, 0))
 
-                textest = fontest.render("YOUR PATH", True, (0, 0, 0))
-                game_window.blit(textest, (WINDOW_WIDTH // 4 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+                if won == True:
 
-                textest = fontest.render("TRUE PATH", True, (0, 0, 0))
+                    textest = fontest.render("YOUR PATH", True, (0, 0, 0))
+                    game_window.blit(textest, (WINDOW_WIDTH // 4 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+
+                    j = 0
+                    for i in range(lscroll, min(lscroll + 7, len(history))):
+                        textest = fonter.render(history[i], True, (0, 0, 0))
+                        game_window.blit(textest, (50, 320 + j*50 - textest.get_height() // 2))
+                        j += 1
+
+                textest = fontest.render("GOAL PATH", True, (0, 0, 0))
                 game_window.blit(textest, (WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))
 
                 j = 0
-                for i in range(lscroll, min(lscroll + 5, len(history))):
-                    textest = fonter.render(history[i], True, (0, 0, 0))
-                    game_window.blit(textest, (50, 320 + j*50 - textest.get_height() // 2))
+                for i in range(rscroll, min(rscroll + 7, len(createdPath))):
+                    textest = fonter.render(createdPath[i], True, (0, 0, 0))
+                    game_window.blit(textest, (WINDOW_WIDTH - 50 - textest.get_width(), 320 + j*50 - textest.get_height() // 2))
                     j += 1
 
-                j = 0
-                for i in range(rscroll, min(rscroll + 5, len(history))):
-                    textest = fonter.render(history[i], True, (0, 0, 0))
-                    game_window.blit(textest, (50, 320 + j*50 - textest.get_height() // 2))
-                    j += 1
+                min_str = str(timer[2])
+                if len(min_str) < 2:
+                    min_str = "0" + min_str
+
+                sec_str = str(timer[1])
+                if len(sec_str) < 2:
+                    sec_str = "0" + sec_str
+
+                time_str = min_str + ":" + sec_str
+
+                texter = fonter.render(time_str, True, (0, 0, 0))
+                game_window.blit(texter, (WINDOW_WIDTH // 2 - texter.get_width() // 2, WINDOW_HEIGHT - texter.get_height() - 10))
 
                 window_resize()
 
@@ -452,6 +473,7 @@ async def main():
 
                 for event in events:
                     if event.type == pygame.MOUSEBUTTONDOWN:
+                        ml = true_mouse_loc()
                         if count == 0 and event.button < 4:
                             game_state = "MAIN MENU"
 
@@ -462,8 +484,8 @@ async def main():
                                     lscroll = len(history) - 2
                             else:
                                 rscroll += 1
-                                if rscroll > len(history) - 2:
-                                    rscroll = len(history) - 2
+                                if rscroll > len(createdPath) - 2:
+                                    rscroll = len(createdPath) - 2
                         elif event.button == 4:
                             if ml[0] < WINDOW_WIDTH // 2:
                                 lscroll -= 1
