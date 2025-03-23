@@ -405,7 +405,7 @@ async def main():
             buttons = []
             prevHeight = WINDOW_HEIGHT // 2 - 45
             for opt in options:
-                newButton = Button(font, opt, (WINDOW_WIDTH // 2, prevHeight), opt)
+                newButton = Button(font, opt, (WINDOW_WIDTH // 3, prevHeight), opt)
                 newButton.show(game_window)
                 prevHeight += newButton.height
                 buttons.append(newButton)
@@ -434,6 +434,12 @@ async def main():
                 font = pygame.font.Font(resource_path('Lora.ttf'), 20)
                 text = font.render("GAMBLING WIN!", True, (0, 0, 0))
                 game_window.blit(text, (WINDOW_WIDTH - 150 - text.get_width() // 2, 250))
+                
+            font = pygame.font.Font(resource_path('Lora.ttf'), 30)
+            text = font.render("Sponsored By:", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH // 3 * 2, 300))
+
+            game_window.blit(spon, (WINDOW_WIDTH // 3 * 2 +text.get_width()//2 - 150, 350))
             
             window_resize()
 
@@ -1010,7 +1016,7 @@ pygame.init()
 true_window = pygame.display.set_mode((960, 720), pygame.RESIZABLE)
 game_window = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
 # Set title
-pygame.display.set_caption("Thesaurace")
+pygame.display.set_caption("ThesauRace")
 # PyGame Clock
 clock = pygame.time.Clock()
 # Blank Window
@@ -1026,6 +1032,7 @@ sam = pygame.image.load("sam.png").convert()
 sam = pygame.transform.scale(sam, (360, 270))
 logo = pygame.image.load("logo.png").convert()
 gambleer = pygame.image.load("gamble 2.png")
+spon = pygame.image.load("sponsors.png")
 
 loss_lines = []
 goodwin_lines = []
