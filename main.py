@@ -285,6 +285,7 @@ async def main():
     lieCount = 0
     
     pygame.mixer.music.load(resource_path("Music.wav"))
+    pygame.mixer.music.set_volume(0.2)
     pygame.mixer.music.play(-1)
 
     gambling_won = True
@@ -600,11 +601,13 @@ async def main():
                 voiceline = "LOSS"
 
             if voiceline == "GOODWIN":
-                pass # play a good win line here
+                line = random.choice(goodwin_lines)
             if voiceline == "BADWIN":
-                pass # play a bad win line here
+                line = random.choice(badwin_lines)
             if voiceline == "LOSS":
-                pass # play a loss line here
+                line = random.choice(loss_lines)
+
+            line.play()
 
             lscroll = 0
             rscroll = 0
@@ -891,6 +894,22 @@ miku = pygame.image.load("miku_sheet.png").convert()
 sam = pygame.image.load("sam.png").convert()
 sam = pygame.transform.scale(sam, (360, 270))
 logo = pygame.image.load("logo.png").convert()
+
+loss_lines = []
+goodwin_lines = []
+badwin_lines = []
+
+goodfiles = [f for f in os.listdir("./Lines/Good") if os.path.isfile(os.path.join("./Lines/Good", f))]
+for file in goodfiles:
+    goodwin_lines.append(pygame.mixer.Sound("./Lines/Good/" + file))
+
+badwinfiles = [f for f in os.listdir("./Lines/Bad win") if os.path.isfile(os.path.join("./Lines/Bad win", f))]
+for file in badwinfiles:
+    badwin_lines.append(pygame.mixer.Sound("./Lines/Bad win/" + file))
+
+lossfiles = [f for f in os.listdir("./Lines/Bad") if os.path.isfile(os.path.join("./Lines/Bad", f))]
+for file in lossfiles:
+    loss_lines.append(pygame.mixer.Sound("./Lines/Bad/" + file))
 
 console_log = []
 console_data = {"Message": "",
