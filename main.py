@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode, math
 
 try:
     import loadModel
@@ -352,6 +352,8 @@ async def main():
         if gambling[0] == gambling[1] and gambling[1] == gambling[2]:
             gambling_won = True
     gambling_won_time = 0
+
+    gambling_second = random.randint(1, 359)
     
     while True:
         noSymMessage = random.choice(noSynonyms)
@@ -388,18 +390,18 @@ async def main():
                 buttons.append(newButton)
 
             for i in range(3):
-                pygame.draw.rect(game_window, gambling[i], (30 + 60*i, 100, 60, 60))
+                pygame.draw.rect(game_window, gambling[i], (60 + 60*i, 100, 60, 60))
 
             if gambling_won_time > 0:
                 gambling_won = True
                 font = pygame.font.Font(resource_path('Lora.ttf'), 20)
                 text = font.render("GAMBLING WIN!", True, (0, 0, 0))
-                game_window.blit(text, (30, 100-text.get_height()))
+                game_window.blit(text, (60, 100-text.get_height()))
                 
             font = pygame.font.Font(resource_path('Lora.ttf'), 30)
             text = font.render("GO GAMBLE", True, (0, 0, 0))
-            game_window.blit(text, (30, 160))
-
+            game_window.blit(text, (60, 160))
+            
             window_resize()
 
             events = global_inputs()
@@ -409,7 +411,7 @@ async def main():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     ml = true_mouse_loc()
                     if event.button < 4:
-                        if ml[0] < 30 + text.get_width() and ml[1] < 160 + text.get_height() and ml[0] > 30 and ml[1] > 160 and gambling_won_time == 0:
+                        if ml[0] < 60 + text.get_width() and ml[1] < 160 + text.get_height() and ml[0] > 60 and ml[1] > 160 and gambling_won_time == 0:
                             gambling = go_gambling()
                             if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
                                 gambling_won = True
