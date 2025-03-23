@@ -1,5 +1,5 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode
 
 ### TEMPLATE FUNCTIONS
 class Button:
@@ -272,7 +272,7 @@ def rand_col():
 ### MAIN FUNCTION
 async def main():
 
-    options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL"]
+    options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL", "DUNGEON"]
     noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
 
     words = gameTextPrototype.get_all_words()
@@ -318,7 +318,7 @@ async def main():
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
             buttons = []
-            prevHeight = WINDOW_HEIGHT // 2 - 20
+            prevHeight = WINDOW_HEIGHT // 2 - 45
             for opt in options:
                 newButton = Button(font, opt, (WINDOW_WIDTH // 2, prevHeight), opt)
                 newButton.show(game_window)
@@ -855,6 +855,13 @@ async def main():
                         if result[0] == "START":
                             game_mode = result[1]
                             game_state = "START"
+
+            await asyncio.sleep(0)
+
+        if game_state == "DUNGEON":
+            dungeonCrawlerMode.game()
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+            game_state = "MAIN MENU"
 
             await asyncio.sleep(0)
 
