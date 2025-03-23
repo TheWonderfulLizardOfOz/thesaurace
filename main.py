@@ -325,7 +325,7 @@ def ai_attempt(model, goal):
 ### MAIN FUNCTION
 async def main():
     options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL", "DUNGEON"]
-    noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
+    noSynonyms = ["I blame the API", "Skill Issue", "It's so over"]
 
     words = gameTextPrototype.get_all_words()
 
