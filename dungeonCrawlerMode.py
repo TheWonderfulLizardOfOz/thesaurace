@@ -32,14 +32,16 @@ class Board:
         for i in range(len(self.grid)):
             for j in range(len(self.grid[0])):
                 if self.grid[i][j] == "S":
-                    game_window.blit(stone, (0+(j*40), 0+(i*40)))
+                    #game_window.blit(stone, (0+(j*40), 0+(i*40)))
+                    pygame.draw.rect(game_window, (128, 255, 128), (0+(j*40), 0+(i*40), 40, 40))
                 elif self.grid[i][j] == "W":
-                    game_window.blit(wall, (0 + (j * 40), 0 + (i * 40)))
+                    pygame.draw.rect(game_window, (128, 128, 128), (0+(j*40), 0+(i*40), 40, 40))
+                    #game_window.blit(wall, (0 + (j * 40), 0 + (i * 40)))
         for i in range(player.lives):
             game_window.blit(heart, ((40 * i + 4), 4))
         game_window.blit(lord, (player.loc[0] * 40, player.loc[1] * 40))
 
-        text = font.render(player.currentWord, True, (255, 255, 255))
+        text = font.render(player.currentWord, True, (0, 0, 0))
         game_window.blit(text, (10*40 - (text.get_width() // 2), 8*40 - (text.get_height() // 2)))
 
         text = font.render("Score: {}".format(str(player.score)), True, (255, 255, 255))
@@ -47,8 +49,8 @@ class Board:
 
         font = pygame.font.SysFont('Courier', 30, False, False)
         for i in range(len(player.options)):
-            text = font.render(player.options[i], True, (255, 255, 255))
-            game_window.blit(text, ((4.5 + 6 * i) * 40 - text.get_width() // 2 , 3.5 * 40 - (text.get_height() // 2)))
+            text = font.render(player.options[i], True, (0, 0, 0))
+            game_window.blit(text, ((4.5 + 6 * i) * 40 - text.get_width() // 2 , (2.5 + i) * 40 - (text.get_height() // 2)))
 
 
         pygame.display.update()
@@ -148,4 +150,6 @@ def game():
                 if event.type == pygame.QUIT:
                     end = True
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    end = True
+                if event.type == pygame.KEYDOWN:
                     end = True
