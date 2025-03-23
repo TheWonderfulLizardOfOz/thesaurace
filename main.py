@@ -370,6 +370,8 @@ async def main():
 
     gambling_second = random.randint(1, 359)
 
+    debt = 0
+
     while True:
         noSymMessage = random.choice(noSynonyms)
         while game_state == "MAIN MENU": # the main menu
@@ -391,7 +393,7 @@ async def main():
             #game_window.blit(logotoo, (25, WINDOW_HEIGHT - 20 - logotoo.get_height()))
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 60)
             difficultyText = font.render(" {} MODE".format(difficulty), True, (0, 0, 0))
-            game_window.blit(difficultyText, (0, 0))
+            game_window.blit(difficultyText, (0, WINDOW_HEIGHT - difficultyText.get_height()))
 
             if not vector_loaded and VECTOR_EXISTS:
                 vectors = font.render("AI Vectors?", True, (0, 0, 0))
@@ -418,6 +420,14 @@ async def main():
                 font = pygame.font.Font(resource_path('Lora.ttf'), 20)
                 text = font.render("GAMBLING WIN!", True, (0, 0, 0))
                 game_window.blit(text, (60, 100-text.get_height()))
+                
+            font = pygame.font.Font(resource_path('Lora.ttf'), 20)
+            if debt < 0:
+                debtstr = "-£" + str(abs(debt))
+            else:
+                debtstr = "£" + str(abs(debt))
+            text = font.render(debtstr + " won.", True, (0, 0, 0))
+            game_window.blit(text, (5, 5))
                 
             font = pygame.font.Font(resource_path('Lora.ttf'), 30)
             text = font.render("GO GAMBLE", True, (0, 0, 0))
@@ -451,14 +461,18 @@ async def main():
                     ml = true_mouse_loc()
                     if event.button < 4:
                         if ml[0] < 60 + 180 and ml[1] < 160 + text.get_height() and ml[0] > 60 and ml[1] > 160 and gambling_won_time == 0:
+                            debt -= 1
                             gambling = go_gambling()
                             if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
                                 gambling_won = True
                                 gambling_won_time = 30
+                                debt += 10
                         elif ml[0] < WINDOW_WIDTH - 50 and ml[1] < 250 + text.get_height() and ml[0] > WINDOW_WIDTH - 250 and ml[1] > 50 and gambling_won_time_2 == 0:
                             gambling_second = random.randint(0, 359)
+                            debt -= 2
                             if gambling_second == 0:
                                 gambling_won_time_2 = 30
+                                debt += 25
                         elif VECTOR_EXISTS and not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
                             vector_loaded = True
                             vecs = gensim.models.KeyedVectors.load_word2vec_format('./glove-wiki-gigaword-50.txt')

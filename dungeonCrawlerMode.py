@@ -59,7 +59,7 @@ class Player:
     def __init__(self, lives):
         self.lives = lives
         self.score = 0
-        self.loc = (10, 8)
+        self.loc = (11, 8)
         self.words = get_all_words()
         self.options = []
         self.correct = ""
@@ -84,14 +84,14 @@ class Player:
 
         self.currentWord = self.correct
         self.setWords()
-        self.loc = (10, 8)
+        self.loc = (11, 8)
 
     def selectOption(self):
-        if self.loc == (4, 6):
+        if self.loc == (4, 5):
             self.enterRoom(self.options[0])
-        if self.loc == (10, 6):
+        if self.loc == (10, 5):
             self.enterRoom(self.options[1])
-        if self.loc == (16, 6):
+        if self.loc == (16, 5):
             self.enterRoom(self.options[2])
 
     def setWords(self):
@@ -117,39 +117,51 @@ def game():
     words = get_all_words()
     player = Player(3)
 
+    cur_down = None
+                    
+    choices = {pygame.K_w: "W", pygame.K_a: "A", pygame.K_s: "S", pygame.K_d: "D", None: ""}
+
+    count = 30
+
     while player.lives > 0:
         board = Board()
         board.display(player)
-        pygame.event.clear()
 
-        valid_move = False
         choice = ""
-        while not valid_move:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN and event.key in {pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d}:
-                    choices = {pygame.K_w: "W", pygame.K_a: "A", pygame.K_s: "S", pygame.K_d: "D"}
-                    choice = choices[event.key]
-                    valid_move = True
 
-        player.move(board, choice)
-        end = False
-        board.display(player)
-        while player.lives <= 0 and not end:
-            font = pygame.font.SysFont('Impact', 220, False, False)
-            text = font.render("GAME", True, (255, 0, 0))
-            game_window.blit(text, (55, 0))
-            text = font.render("OVER", True, (255, 0, 0))
-            game_window.blit(text, (75, 220))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN and event.key in {pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d}:
+                cur_down = event.key
+            elif event.type == pygame.KEYUP and event.key == cur_down:
+                cur_down = None
 
-            pygame.display.update()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    end = True
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    end = True
-                if event.type == pygame.KEYDOWN:
-                    end = True
+        count -= 1
+        if count == 0:
+            count += 30
+            choice = choices[cur_down]
+
+        if choice != "":
+
+            player.move(board, choice)
+            end = False
+            board.display(player)
+            while player.lives <= 0 and not end:
+                font = pygame.font.SysFont('Impact', 220, False, False)
+                text = font.render("GAME", True, (255, 0, 0))
+                game_window.blit(text, (55, 0))
+                text = font.render("OVER", True, (255, 0, 0))
+                game_window.blit(text, (75, 220))
+
+                pygame.display.update()
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        end = True
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        end = True
+                    if event.type == pygame.KEYDOWN:
+                        end = True
