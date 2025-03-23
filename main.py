@@ -1,7 +1,11 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
 import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode
-import loadModel
 
+try:
+    import loadModel
+    VECTOR_EXISTS = True
+except:
+    VECTOR_EXISTS = False
 
 ### TEMPLATE FUNCTIONS
 class Button:
@@ -338,7 +342,7 @@ async def main():
     vector_loaded = False
     
     pygame.mixer.music.load(resource_path("Music.wav"))
-    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(-1)
 
     gambling_won = True
@@ -370,7 +374,7 @@ async def main():
             difficultyText = font.render(" {} MODE".format(difficulty), True, (0, 0, 0))
             game_window.blit(difficultyText, (0, 0))
 
-            if not vector_loaded:
+            if not vector_loaded and VECTOR_EXISTS:
                 vectors = font.render("Vectors?", True, (0, 0, 0))
                 game_window.blit(vectors, (WINDOW_WIDTH - vectors.get_width(), 0))
 
@@ -410,7 +414,7 @@ async def main():
                             if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
                                 gambling_won = True
                                 gambling_won_time = 30
-                        elif not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
+                        elif VECTOR_EXISTS and not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
                             vector_loaded = True
                             loadModel.load()
                         else:
@@ -456,7 +460,7 @@ async def main():
 
             goal_word, createdPath = setGoalWord(current_word, difficulties[difficulty])
 
-            if vector_loaded:
+            if vector_loaded and VECTOR_EXISTS:
                 ai = ai_attempt(loadModel.model, goal_word)
 
             check[0] = False
