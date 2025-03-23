@@ -353,6 +353,8 @@ async def main():
             gambling_won = True
     gambling_won_time = 0
 
+    gambling_won_time_2 = 0
+
     gambling_second = random.randint(1, 359)
     
     while True:
@@ -362,6 +364,8 @@ async def main():
 
             if gambling_won_time > 0:
                 gambling_won_time -= 1
+            if gambling_won_time_2 > 0:
+                gambling_won_time_2 -= 1
 
             junk = random.randint(0, 20)
 
@@ -401,6 +405,18 @@ async def main():
             font = pygame.font.Font(resource_path('Lora.ttf'), 30)
             text = font.render("GO GAMBLE", True, (0, 0, 0))
             game_window.blit(text, (60, 160))
+
+            new_sur = pygame.transform.rotate(gambleer, gambling_second)
+            game_window.blit(new_sur, (WINDOW_WIDTH - 150 - new_sur.get_width() // 2, 150 - new_sur.get_height() // 2))
+
+            text = font.render("SPIN", True, (0, 0, 0))
+            game_window.blit(text, (WINDOW_WIDTH - 150 - text.get_width() // 2, 100 - text.get_height() // 2))
+            game_window.blit(text, (WINDOW_WIDTH - 150 - text.get_width() // 2, 200 - text.get_height() // 2))
+
+            if gambling_won_time_2 > 0:
+                font = pygame.font.Font(resource_path('Lora.ttf'), 20)
+                text = font.render("GAMBLING WIN!", True, (0, 0, 0))
+                game_window.blit(text, (WINDOW_WIDTH - 150 - text.get_width() // 2, 250))
             
             window_resize()
 
@@ -410,12 +426,16 @@ async def main():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     ml = true_mouse_loc()
-                    if event.button < 4:
-                        if ml[0] < 60 + text.get_width() and ml[1] < 160 + text.get_height() and ml[0] > 60 and ml[1] > 160 and gambling_won_time == 0:
+                    if event.button < 4 or True:
+                        if ml[0] < 60 + 180 and ml[1] < 160 + text.get_height() and ml[0] > 60 and ml[1] > 160 and gambling_won_time == 0:
                             gambling = go_gambling()
                             if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
                                 gambling_won = True
                                 gambling_won_time = 30
+                        elif ml[0] < WINDOW_WIDTH - 50 and ml[1] < 250 + text.get_height() and ml[0] > WINDOW_WIDTH - 250 and ml[1] > 50 and gambling_won_time_2 == 0:
+                            gambling_second = random.randint(0, 359)
+                            if gambling_second == 0:
+                                gambling_won_time_2 = 30
                         elif VECTOR_EXISTS and not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
                             vector_loaded = True
                             loadModel.load()
@@ -963,6 +983,7 @@ miku = pygame.image.load("miku_sheet.png").convert()
 sam = pygame.image.load("sam.png").convert()
 sam = pygame.transform.scale(sam, (360, 270))
 logo = pygame.image.load("logo.png").convert()
+gambleer = pygame.image.load("gamble 2.png")
 
 loss_lines = []
 goodwin_lines = []
