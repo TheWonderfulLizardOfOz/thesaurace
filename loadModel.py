@@ -1,8 +1,11 @@
-import time
+import gensim.downloader
+from gensim.scripts.glove2word2vec import glove2word2vec
 
-from gensim.models import KeyedVectors
 
 model = None
 def load():
     global model
-    model = KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
+    glove_vectors = gensim.downloader.load('glove-wiki-gigaword-50')
+    glove_vectors.save_word2vec_format('./glove-wiki-gigaword-50.txt')
+    glove2word2vec('./glove-wiki-gigaword-50.txt', './glove-wiki-gigaword-50.txt')
+

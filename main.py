@@ -1,8 +1,10 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
-import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode, math
+import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode
+
+import os.path
 
 try:
-    import loadModel
+    import loadModel, gensim.models.keyedvectors
     VECTOR_EXISTS = True
 except:
     VECTOR_EXISTS = False
@@ -284,9 +286,13 @@ def calcPath(parents, start, end):
         path.append(parents[current])
         current = path[-1]
     path.reverse()
-    print(path)
+    return path
 
-def ai_attempt(model, goal):
+def ai_attempt(goal, vecs):
+    if not os.path.isfile('./glove-wiki-gigaword-50.txt'):
+        return
+
+    print(vecs)
     current = "foundations"
     visited = {"foundations"}
     parents = {"foundations": None}
@@ -298,14 +304,20 @@ def ai_attempt(model, goal):
         print(current, goal)
         synonyms = gameTextPrototype.get_synonyms_of(current)
         for s in synonyms:
+            if s == goal:
+                parents[s] = current
+                current = s
+                break
             try:
                 if s not in parents:
-                    scored_syns.append((model.similarity(goal, s), s))
+                    scored_syns.append((vecs.similarity(goal, s), s))
                     parents[s] = current
             except:
                 pass
-
+        if current == goal:
+            break
         scored_syns.sort()
+        print(scored_syns)
 
 
         for i in range(len(scored_syns) -1, -1 , -1):
@@ -321,15 +333,16 @@ def ai_attempt(model, goal):
             break
 
     if not gave_up:
-        print(calcPath(parents, "foundations", goal))
+        return calcPath(parents, "foundations", goal)
     else:
-        print("Gave up")
+        return ["Gave up"]
 
 
 ### MAIN FUNCTION
 async def main():
     options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL", "DUNGEON"]
     noSynonyms = ["I blame the API", "Skill Issue", "It's so over"]
+    vecs = None
 
     words = gameTextPrototype.get_all_words()
 
@@ -356,7 +369,7 @@ async def main():
     gambling_won_time_2 = 0
 
     gambling_second = random.randint(1, 359)
-    
+
     while True:
         noSymMessage = random.choice(noSynonyms)
         while game_state == "MAIN MENU": # the main menu
@@ -381,8 +394,12 @@ async def main():
             game_window.blit(difficultyText, (0, 0))
 
             if not vector_loaded and VECTOR_EXISTS:
-                vectors = font.render("Vectors?", True, (0, 0, 0))
+                vectors = font.render("AI Vectors?", True, (0, 0, 0))
                 game_window.blit(vectors, (WINDOW_WIDTH - vectors.get_width(), 0))
+
+                font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 20)
+                warning = font.render("Warning Slow!", True, (0, 0, 0))
+                game_window.blit(warning, (WINDOW_WIDTH - warning.get_width(), vectors.get_height()))
 
             font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 100)
             buttons = []
@@ -438,7 +455,9 @@ async def main():
                                 gambling_won_time_2 = 30
                         elif VECTOR_EXISTS and not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
                             vector_loaded = True
-                            loadModel.load()
+                            vecs = gensim.models.KeyedVectors.load_word2vec_format('./glove-wiki-gigaword-50.txt')
+                            if not os.path.isfile('./glove-wiki-gigaword-50.txt'):
+                                loadModel.load()
                         else:
                             game_state = checkMouseClick(buttons, game_state)[0]
 
@@ -484,6 +503,8 @@ async def main():
 
             if vector_loaded and VECTOR_EXISTS:
                 ai = ai_attempt(loadModel.model, goal_word)
+            if vector_loaded and vecs:
+                ai_solution = ai_attempt(goal_word, vecs)
 
             check[0] = False
             scroll = 0
@@ -723,19 +744,40 @@ async def main():
                         game_window.blit(textest, (50, 320 + j*50 - textest.get_height() // 2))
                         j += 1
 
-                textest = fontest.render("GOAL PATH", True, (0, 0, 0))
-                game_window.blit(textest, (WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))             
 
-                j = 0
-                for i in range(rscroll, min(rscroll + 7, len(createdPath))):
-                    col = (0, 0, 0)
-                    if won == False:
-                        col = (64, 0, 0)
-                        if createdPath[i] in history:
-                            col = (0, 64, 0)
-                    textest = fonter.render(createdPath[i], True, col)
-                    game_window.blit(textest, (WINDOW_WIDTH - 50 - textest.get_width(), 320 + j*50 - textest.get_height() // 2))
-                    j += 1
+                if vector_loaded and vecs:
+                    textest = fontest.render("AI PATH", True, (0, 0, 0))
+                    game_window.blit(textest, (
+                    WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+
+                    j = 0
+                    for i in range(rscroll, min(rscroll + 7, len(ai_solution))):
+                        col = (0, 0, 0)
+                        if won == False:
+                            col = (64, 0, 0)
+                            if ai_solution[i] in history:
+                                col = (0, 64, 0)
+                        textest = fonter.render(ai_solution[i], True, col)
+                        game_window.blit(textest, (
+                        WINDOW_WIDTH - 50 - textest.get_width(), 320 + j * 50 - textest.get_height() // 2))
+                        j += 1
+
+                else:
+                    textest = fontest.render("GOAL PATH", True, (0, 0, 0))
+                    game_window.blit(textest, (
+                    WINDOW_WIDTH // 4 * 3 - textest.get_width() // 2, 250 - textest.get_height() // 2))
+
+                    j = 0
+                    for i in range(rscroll, min(rscroll + 7, len(createdPath))):
+                        col = (0, 0, 0)
+                        if won == False:
+                            col = (64, 0, 0)
+                            if createdPath[i] in history:
+                                col = (0, 64, 0)
+                        textest = fonter.render(createdPath[i], True, col)
+                        game_window.blit(textest, (
+                        WINDOW_WIDTH - 50 - textest.get_width(), 320 + j * 50 - textest.get_height() // 2))
+                        j += 1
 
                 if game_mode in {"IRON MAN", "TIMER", "LIES"}:
                     min_str = str(timer[2])
