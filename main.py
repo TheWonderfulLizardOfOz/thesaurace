@@ -1,5 +1,7 @@
 #1234567890123456789012345678901234567890123456789012345678901234567890123456789
 import random, pygame, sys, os, asyncio, requests, gameTextPrototype, time, threading, dungeonCrawlerMode
+import loadModel
+
 
 ### TEMPLATE FUNCTIONS
 class Button:
@@ -246,6 +248,7 @@ def setGoalWord(currentWord, difficulty):
             currentWord = random.choice(synonyms)
             createdPath.append(currentWord)
             i += 1
+
     return currentWord, createdPath
 
 def isLie(lies, choice):
@@ -269,9 +272,58 @@ def go_gambling():
 def rand_col():
     return (random.randint(1, 2) * 128 - 64, random.randint(1, 2) * 128 - 64, random.randint(1, 2) * 128 - 64)
 
+
+def calcPath(parents, start, end):
+    path = [end]
+    current = end
+    while current != start:
+        path.append(parents[current])
+        current = path[-1]
+    path.reverse()
+    print(path)
+
+def ai_attempt(model, goal):
+    current = "foundations"
+    visited = {"foundations"}
+    parents = {"foundations": None}
+    scored_syns = []
+    gave_up = False
+
+    while current != goal:
+        prev = current
+        print(current, goal)
+        synonyms = gameTextPrototype.get_synonyms_of(current)
+        for s in synonyms:
+            try:
+                if s not in parents:
+                    scored_syns.append((model.similarity(goal, s), s))
+                    parents[s] = current
+            except:
+                pass
+
+        scored_syns.sort()
+
+
+        for i in range(len(scored_syns) -1, -1 , -1):
+            syn = scored_syns[i][1]
+            if syn not in visited:
+                visited.add(syn)
+                current = syn
+                scored_syns = scored_syns[0:i].copy()
+                break
+        print(len(scored_syns))
+        if current == prev:
+            gave_up = True
+            break
+
+    if not gave_up:
+        print(calcPath(parents, "foundations", goal))
+    else:
+        print("Gave up")
+
+
 ### MAIN FUNCTION
 async def main():
-
     options = ["START", "DIFFICULTY", "CREDITS", "TUTORIAL", "DUNGEON"]
     noSynonyms = ["I blame the API", "Skill Issue", "But nothing happened"]
 
@@ -283,6 +335,7 @@ async def main():
     game_modes = ["TIMER", "TURN BASED", "IRON MAN", "LIES", "SCORE"]
     game_mode = None
     lieCount = 0
+    vector_loaded = False
     
     pygame.mixer.music.load(resource_path("Music.wav"))
     pygame.mixer.music.set_volume(0.2)
@@ -317,7 +370,11 @@ async def main():
             difficultyText = font.render(" {} MODE".format(difficulty), True, (0, 0, 0))
             game_window.blit(difficultyText, (0, 0))
 
-            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 120)
+            if not vector_loaded:
+                vectors = font.render("Vectors?", True, (0, 0, 0))
+                game_window.blit(vectors, (WINDOW_WIDTH - vectors.get_width(), 0))
+
+            font = pygame.font.Font(resource_path('Kenney Pixel.ttf'), 100)
             buttons = []
             prevHeight = WINDOW_HEIGHT // 2 - 45
             for opt in options:
@@ -353,6 +410,9 @@ async def main():
                             if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
                                 gambling_won = True
                                 gambling_won_time = 30
+                        elif not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
+                            vector_loaded = True
+                            loadModel.load()
                         else:
                             game_state = checkMouseClick(buttons, game_state)[0]
 
@@ -395,6 +455,9 @@ async def main():
             t2.start()
 
             goal_word, createdPath = setGoalWord(current_word, difficulties[difficulty])
+
+            if vector_loaded:
+                ai = ai_attempt(loadModel.model, goal_word)
 
             check[0] = False
             scroll = 0
