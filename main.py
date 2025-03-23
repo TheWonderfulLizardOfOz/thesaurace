@@ -467,12 +467,18 @@ async def main():
                                 gambling_won = True
                                 gambling_won_time = 30
                                 debt += 10
+                                gamblewin.play()
+                            else:
+                                gambleloss.play()
                         elif ml[0] < WINDOW_WIDTH - 50 and ml[1] < 250 + text.get_height() and ml[0] > WINDOW_WIDTH - 250 and ml[1] > 50 and gambling_won_time_2 == 0:
                             gambling_second = random.randint(0, 359)
                             debt -= 2
                             if gambling_second == 0:
                                 gambling_won_time_2 = 30
                                 debt += 25
+                                gamblewin.play()
+                            else:
+                                gambleloss.play()
                         elif VECTOR_EXISTS and not vector_loaded and ml[0] >= WINDOW_WIDTH - vectors.get_width() and ml[1] <= vectors.get_height():
                             vector_loaded = True
                             vecs = gensim.models.KeyedVectors.load_word2vec_format('./glove-wiki-gigaword-50.txt')
@@ -1063,6 +1069,9 @@ for file in badwinfiles:
 lossfiles = [f for f in os.listdir("./Lines/Bad") if os.path.isfile(os.path.join("./Lines/Bad", f))]
 for file in lossfiles:
     loss_lines.append(pygame.mixer.Sound("./Lines/Bad/" + file))
+
+gamblewin = pygame.mixer.Sound("GamblingWin.wav")
+gambleloss = pygame.mixer.Sound("GamblingLose.wav")
 
 console_log = []
 console_data = {"Message": "",
