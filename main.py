@@ -443,7 +443,7 @@ async def main():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     ml = true_mouse_loc()
-                    if event.button < 4 or True:
+                    if event.button < 4:
                         if ml[0] < 60 + 180 and ml[1] < 160 + text.get_height() and ml[0] > 60 and ml[1] > 160 and gambling_won_time == 0:
                             gambling = go_gambling()
                             if gambling[0] == gambling[1] and gambling[0] == gambling[2]:
