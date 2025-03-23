@@ -450,6 +450,7 @@ async def main():
             game_window.blit(text, (WINDOW_WIDTH // 3 * 2, 300))
 
             game_window.blit(spon, (WINDOW_WIDTH // 3 * 2 +text.get_width()//2 - 150, 350))
+            pygame.draw.rect(game_window, (0,0,0), (WINDOW_WIDTH // 3 * 2 +text.get_width()//2 - 150, 350, 300, 350), 2)
             
             window_resize()
 
